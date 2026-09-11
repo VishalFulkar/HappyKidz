@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Reports</h1><p class="desc">Search, filter and print school-wide reports</p></div></div>
+<div class="grid-4">
+  <a href="{{ url_for('report_students') }}" class="feature-card"><div class="feature-icon">&#128100;</div><h3>Student List</h3><p>Full or class-wise student rosters.</p></a>
+  <a href="{{ url_for('report_teachers') }}" class="feature-card"><div class="feature-icon">&#127891;</div><h3>Teacher List</h3><p>All active teaching staff.</p></a>
+  <a href="{{ url_for('attendance_reports') }}" class="feature-card"><div class="feature-icon">&#9989;</div><h3>Attendance Report</h3><p>Class-wise attendance percentages.</p></a>
+  <a href="{{ url_for('report_results') }}" class="feature-card"><div class="feature-icon">&#127942;</div><h3>Exam Result Summary</h3><p>Ranked results per exam.</p></a>
+  <a href="{{ url_for('report_fees') }}" class="feature-card"><div class="feature-icon">&#128176;</div><h3>Fee Report</h3><p>All fee records and statuses.</p></a>
+  <a href="{{ url_for('report_admissions') }}" class="feature-card"><div class="feature-icon">&#128228;</div><h3>Admission Report</h3><p>All admission applications.</p></a>
+</div>
+{% endblock %}

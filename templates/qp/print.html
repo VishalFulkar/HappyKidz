@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{{ paper.title }}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="print-toolbar no-print">
+  <button onclick="window.print()" class="btn btn-primary">Print / Download PDF</button>
+  <a href="{{ url_for('qp_builder', qp_id=paper.id) }}" class="btn btn-secondary">Back to Builder</a>
+</div>
+
+<div class="print-sheet">
+  <div class="print-head">
+    <div class="badge-logo">HK</div>
+    <h2>{{ school_name }}</h2>
+    <div class="place">{{ school_place }}</div>
+    <div class="doc-title">{{ paper.title }}</div>
+  </div>
+
+  <div class="print-meta">
+    <div><span class="k">Class: </span><span class="v">{% if paper.class_name %}{{ paper.class_name }}-{{ paper.section }}{% else %}-{% endif %}</span></div>
+    <div><span class="k">Subject: </span><span class="v">{{ paper.subject_name or '-' }}</span></div>
+    <div><span class="k">Date: </span><span class="v">{{ today }}</span></div>
+    <div><span class="k">Time: </span><span class="v">{{ paper.duration or '-' }}</span></div>
+    <div><span class="k">Maximum Marks: </span><span class="v">{{ paper.total_marks or '-' }}</span></div>
+    <div><span class="k">Academic Session: </span><span class="v">{{ paper.academic_session or '-' }}</span></div>
+  </div>
+
+  {% if paper.instructions %}
+  <div class="alert-inline">
+    <strong>General Instructions:</strong> {{ paper.instructions }}
+  </div>
+  {% endif %}
+
+  <div style="margin-top:20px;">
+    {% for q in questions %}
+    <div style="display:flex; justify-content:space-between; gap:16px; padding:14px 0; border-bottom:1px solid #eef1f6;">
+      <div style="flex:1;">
+        <strong>Q{{ q.order_index }}.</strong> {{ q.question_text }}
+        <div style="font-size:11.5px; color:var(--ink-500); margin-top:4px; text-transform:uppercase; letter-spacing:.03em;">{{ q.question_type }}</div>
+      </div>
+      <div style="font-weight:700; white-space:nowrap;">[{{ q.marks }} marks]</div>
+    </div>
+    {% else %}
+    <p>No questions added to this paper yet.</p>
+    {% endfor %}
+  </div>
+
+  <p style="text-align:center; margin-top:30px; font-weight:700; color:var(--ink-500);">— END OF QUESTION PAPER —</p>
+</div>
+
+<script>
+setTimeout(() => { document.querySelectorAll('.flash').forEach(f => f.style.display = 'none'); }, 4500);
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <h1>Welcome back, {{ session.get('username') }} 👋</h1>
+    <p class="desc">Here's what's happening at {{ school_name }} today.</p>
+  </div>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="top"><div class="icon ic-blue">&#128100;</div></div>
+    <div class="val">{{ stats.students }}</div>
+    <div class="lbl">Total Students</div>
+  </div>
+  <div class="stat-card">
+    <div class="top"><div class="icon ic-green">&#127891;</div></div>
+    <div class="val">{{ stats.teachers }}</div>
+    <div class="lbl">Total Teachers</div>
+  </div>
+  <div class="stat-card">
+    <div class="top"><div class="icon ic-amber">&#128194;</div></div>
+    <div class="val">{{ stats.classes }}</div>
+    <div class="lbl">Total Classes</div>
+  </div>
+  <div class="stat-card">
+    <div class="top"><div class="icon ic-blue">&#128218;</div></div>
+    <div class="val">{{ stats.subjects }}</div>
+    <div class="lbl">Total Subjects</div>
+  </div>
+  <div class="stat-card">
+    <div class="top"><div class="icon ic-amber">&#128203;</div></div>
+    <div class="val">{{ stats.exams }}</div>
+    <div class="lbl">Total Exams</div>
+  </div>
+  <div class="stat-card">
+    <div class="top"><div class="icon ic-red">&#128228;</div></div>
+    <div class="val">{{ stats.pending_admissions }}</div>
+    <div class="lbl">Pending Admissions</div>
+  </div>
+  <div class="stat-card">
+    <div class="top"><div class="icon ic-green">&#128176;</div></div>
+    <div class="val">₹{{ '%.0f'|format(stats.fees_collected) }}</div>
+    <div class="lbl">Fee Collected</div>
+  </div>
+  <div class="stat-card">
+    <div class="top"><div class="icon ic-red">&#8987;</div></div>
+    <div class="val">₹{{ '%.0f'|format(stats.fees_pending) }}</div>
+    <div class="lbl">Fee Pending</div>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom:24px;">
+  <div class="card-title">Quick Actions</div>
+  <div class="qa-grid">
+    <a href="{{ url_for('student_add') }}" class="qa-btn"><div class="qa-ic">&#128100;</div>Add Student</a>
+    <a href="{{ url_for('teacher_add') }}" class="qa-btn"><div class="qa-ic">&#127891;</div>Add Teacher</a>
+    <a href="{{ url_for('exam_add') }}" class="qa-btn"><div class="qa-ic">&#128203;</div>Add Exam</a>
+    <a href="{{ url_for('subject_list') }}" class="qa-btn"><div class="qa-ic">&#128218;</div>Add Subject</a>
+    <a href="{{ url_for('marks_entry') }}" class="qa-btn"><div class="qa-ic">&#9997;</div>Enter Results</a>
+    <a href="{{ url_for('marksheet_select') }}" class="qa-btn"><div class="qa-ic">&#127942;</div>Marksheet</a>
+    <a href="{{ url_for('qp_add') }}" class="qa-btn"><div class="qa-ic">&#128221;</div>Question Paper</a>
+    <a href="{{ url_for('attendance') }}" class="qa-btn"><div class="qa-ic">&#9989;</div>Mark Attendance</a>
+    <a href="{{ url_for('fees_list') }}" class="qa-btn"><div class="qa-ic">&#128176;</div>Manage Fees</a>
+    <a href="{{ url_for('notice_list') }}" class="qa-btn"><div class="qa-ic">&#128276;</div>Notices</a>
+    <a href="{{ url_for('event_list') }}" class="qa-btn"><div class="qa-ic">&#127881;</div>Events</a>
+    <a href="{{ url_for('reports_home') }}" class="qa-btn"><div class="qa-ic">&#128202;</div>Reports</a>
+  </div>
+</div>
+
+<div class="grid-3">
+  <div class="card">
+    <div class="card-title">Recent Admissions</div>
+    {% if recent_admissions %}
+      {% for a in recent_admissions %}
+      <div class="notice-row">
+        <div style="flex:1;">
+          <strong>{{ a.student_name }}</strong>
+          <p style="margin:2px 0 0;">{{ a.class_applied }} · {{ a.parent_name }}</p>
+        </div>
+        <span class="badge {{ 'badge-amber' if a.status=='pending' else ('badge-green' if a.status=='approved' else 'badge-red') }}">{{ a.status }}</span>
+      </div>
+      {% endfor %}
+    {% else %}<p>No applications yet.</p>{% endif %}
+  </div>
+  <div class="card">
+    <div class="card-title">Recent Notices</div>
+    {% if recent_notices %}
+      {% for n in recent_notices %}
+      <div class="notice-row"><div><strong>{{ n.title }}</strong><p style="margin:2px 0 0;">{{ n.date }}</p></div></div>
+      {% endfor %}
+    {% else %}<p>No notices yet.</p>{% endif %}
+  </div>
+  <div class="card">
+    <div class="card-title">Upcoming Events</div>
+    {% if upcoming_events %}
+      {% for e in upcoming_events %}
+      <div class="event-row"><div><strong>{{ e.title }}</strong><p style="margin:2px 0 0;">{{ e.event_date }}</p></div></div>
+      {% endfor %}
+    {% else %}<p>No upcoming events.</p>{% endif %}
+  </div>
+</div>
+
+{% endblock %}

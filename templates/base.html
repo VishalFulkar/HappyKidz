@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Dashboard{% endblock %} · {{ school_name }}</title>
+<meta name="csrf-token" content="{{ csrf_token }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="flash-wrap" id="flashWrap">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash flash-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+</div>
+
+<div class="app-shell">
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-badge">HK</div>
+      <div>
+        <div class="name">Happy Kidz Public<br>School</div>
+        <div class="sub">Bhimgarh · Admin Portal</div>
+      </div>
+    </div>
+    <nav>
+      {% set role = session.get('role') %}
+      {% if role == 'admin' %}
+        <a href="{{ url_for('admin_dashboard') }}" class="{{ 'active' if request.endpoint=='admin_dashboard' }}"><span class="ic">&#9632;</span> Dashboard</a>
+        <div class="sidebar-section-label">Academics</div>
+        <a href="{{ url_for('student_list') }}" class="{{ 'active' if request.endpoint in ['student_list','student_add','student_profile','student_edit'] }}"><span class="ic">&#128100;</span> Students</a>
+        <a href="{{ url_for('teacher_list') }}" class="{{ 'active' if request.endpoint in ['teacher_list','teacher_add','teacher_profile','teacher_edit'] }}"><span class="ic">&#127891;</span> Teachers</a>
+        <a href="{{ url_for('class_list') }}" class="{{ 'active' if request.endpoint=='class_list' }}"><span class="ic">&#128194;</span> Classes</a>
+        <a href="{{ url_for('subject_list') }}" class="{{ 'active' if request.endpoint=='subject_list' }}"><span class="ic">&#128218;</span> Subjects</a>
+        <a href="{{ url_for('attendance') }}" class="{{ 'active' if request.endpoint in ['attendance','attendance_reports'] }}"><span class="ic">&#9989;</span> Attendance</a>
+        <div class="sidebar-section-label">Examinations</div>
+        <a href="{{ url_for('exam_list') }}" class="{{ 'active' if request.endpoint in ['exam_list','exam_add'] }}"><span class="ic">&#128203;</span> Exams</a>
+        <a href="{{ url_for('marks_entry') }}" class="{{ 'active' if request.endpoint=='marks_entry' }}"><span class="ic">&#9997;</span> Enter Results</a>
+        <a href="{{ url_for('marksheet_select') }}" class="{{ 'active' if request.endpoint in ['marksheet_select','marksheet_view'] }}"><span class="ic">&#127942;</span> Marksheets</a>
+        <a href="{{ url_for('qp_list') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('qp_') }}"><span class="ic">&#128221;</span> Question Papers</a>
+        <div class="sidebar-section-label">School Office</div>
+        <a href="{{ url_for('fees_list') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('fees_') }}"><span class="ic">&#128176;</span> Fees</a>
+        <a href="{{ url_for('timetable_view') }}" class="{{ 'active' if request.endpoint=='timetable_view' }}"><span class="ic">&#128197;</span> Timetable</a>
+        <a href="{{ url_for('notice_list') }}" class="{{ 'active' if request.endpoint=='notice_list' }}"><span class="ic">&#128276;</span> Notices</a>
+        <a href="{{ url_for('event_list') }}" class="{{ 'active' if request.endpoint=='event_list' }}"><span class="ic">&#127881;</span> Events</a>
+        <a href="{{ url_for('admission_list') }}" class="{{ 'active' if request.endpoint=='admission_list' }}"><span class="ic">&#128228;</span> Admissions</a>
+        <a href="{{ url_for('message_list') }}" class="{{ 'active' if request.endpoint=='message_list' }}"><span class="ic">&#9993;</span> Messages</a>
+        <div class="sidebar-section-label">Website</div>
+        <a href="{{ url_for('website_manager') }}" class="{{ 'active' if request.endpoint=='website_manager' }}"><span class="ic">🌐</span> Website Manager</a>
+        <a href="{{ url_for('gallery_manage') }}" class="{{ 'active' if request.endpoint in ['gallery_manage','gallery_delete'] }}"><span class="ic">&#128247;</span> Gallery</a>
+        <a href="{{ url_for('social_settings') }}" class="{{ 'active' if request.endpoint=='social_settings' }}"><span class="ic">&#128241;</span> Social Media</a>
+        <a href="{{ url_for('website_settings') }}" class="{{ 'active' if request.endpoint=='website_settings' }}"><span class="ic">⚙️</span> Website Details</a>
+        <a href="{{ url_for('reports_home') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('report') }}"><span class="ic">&#128202;</span> Reports</a>
+        <a href="{{ url_for('accounts') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('account') }}"><span class="ic">&#128273;</span> Login Accounts</a>
+        <a href="{{ url_for('admin_security') }}" class="{{ 'active' if request.endpoint=='admin_security' }}"><span class="ic">🔐</span> Account Security</a>
+      {% elif role == 'teacher' %}
+        <a href="{{ url_for('teacher_dashboard') }}" class="{{ 'active' if request.endpoint=='teacher_dashboard' }}"><span class="ic">&#9632;</span> Dashboard</a>
+        <a href="{{ url_for('student_list') }}" class="{{ 'active' if request.endpoint in ['student_list','student_profile'] }}"><span class="ic">&#128100;</span> Students</a>
+        <a href="{{ url_for('attendance') }}" class="{{ 'active' if request.endpoint in ['attendance','attendance_reports'] }}"><span class="ic">&#9989;</span> Attendance</a>
+        <a href="{{ url_for('exam_list') }}" class="{{ 'active' if request.endpoint=='exam_list' }}"><span class="ic">&#128203;</span> Exams</a>
+        <a href="{{ url_for('marks_entry') }}" class="{{ 'active' if request.endpoint=='marks_entry' }}"><span class="ic">&#9997;</span> Enter Results</a>
+        <a href="{{ url_for('marksheet_select') }}" class="{{ 'active' if request.endpoint in ['marksheet_select','marksheet_view'] }}"><span class="ic">&#127942;</span> Marksheets</a>
+        <a href="{{ url_for('qp_list') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('qp_') }}"><span class="ic">&#128221;</span> Question Papers</a>
+        <a href="{{ url_for('timetable_view') }}" class="{{ 'active' if request.endpoint=='timetable_view' }}"><span class="ic">&#128197;</span> Timetable</a>
+        <a href="{{ url_for('notice_list') }}" class="{{ 'active' if request.endpoint=='notice_list' }}"><span class="ic">&#128276;</span> Notices</a>
+        <a href="{{ url_for('event_list') }}" class="{{ 'active' if request.endpoint=='event_list' }}"><span class="ic">&#127881;</span> Events</a>
+      {% elif role == 'student' %}
+        <a href="{{ url_for('student_dashboard') }}" class="{{ 'active' if request.endpoint=='student_dashboard' }}"><span class="ic">&#9632;</span> Dashboard</a>
+        <a href="{{ url_for('student_profile', sid=session.get('linked_id')) }}" class="{{ 'active' if request.endpoint=='student_profile' }}"><span class="ic">&#128100;</span> My Profile</a>
+        <a href="{{ url_for('marksheet_select') }}" class="{{ 'active' if request.endpoint in ['marksheet_select','marksheet_view'] }}"><span class="ic">&#127942;</span> My Results</a>
+        <a href="{{ url_for('timetable_view') }}" class="{{ 'active' if request.endpoint=='timetable_view' }}"><span class="ic">&#128197;</span> Timetable</a>
+        <a href="{{ url_for('notice_list') }}" class="{{ 'active' if request.endpoint=='notice_list' }}"><span class="ic">&#128276;</span> Notices</a>
+        <a href="{{ url_for('event_list') }}" class="{{ 'active' if request.endpoint=='event_list' }}"><span class="ic">&#127881;</span> Events</a>
+      {% endif %}
+    </nav>
+  </aside>
+
+  <div class="main-area">
+    <div class="mobile-topbar">
+      <button class="btn btn-secondary btn-sm" onclick="toggleSidebar()">&#9776; Menu</button>
+      <div class="brand" style="font-size:14px;">{{ school_name }}</div>
+      <a href="{{ url_for('logout') }}" class="btn btn-outline btn-sm">Logout</a>
+    </div>
+    <div class="topbar">
+      {% if session.get('role') in ['admin','teacher'] %}
+      <div class="topbar-search">
+        <span class="sic">&#128269;</span>
+        <input type="text" id="globalSearch" placeholder="Search students by name, ID, roll no...">
+        <div class="search-results" id="searchResults"></div>
+      </div>
+      {% else %}
+      <div></div>
+      {% endif %}
+      <div class="topbar-right">
+        <div class="user-chip">
+          <div class="avatar">{{ session.get('username','U')[0]|upper }}</div>
+          <div>
+            <div class="uname">{{ session.get('username') }}</div>
+            <div class="urole">{{ session.get('role') }}</div>
+          </div>
+        </div>
+        <a href="{{ url_for('logout') }}" class="btn btn-outline btn-sm">Logout</a>
+      </div>
+    </div>
+
+    <div class="content">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('show');
+}
+
+// Auto-hide flash messages
+setTimeout(() => {
+  document.querySelectorAll('.flash').forEach(f => f.style.display = 'none');
+}, 4500);
+
+// Automatically add the per-session CSRF token to authenticated forms.
+const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+if (csrfMeta) {
+  document.querySelectorAll('form[method="post"], form[method="POST"], form:not([method])').forEach(form => {
+    if (!form.querySelector('input[name="csrf_token"]')) {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'csrf_token';
+      input.value = csrfMeta.content;
+      form.appendChild(input);
+    }
+  });
+}
+
+// Global search
+const searchInput = document.getElementById('globalSearch');
+if (searchInput) {
+  let debounce;
+  searchInput.addEventListener('input', function() {
+    clearTimeout(debounce);
+    const q = this.value.trim();
+    const box = document.getElementById('searchResults');
+    if (q.length < 2) { box.classList.remove('show'); return; }
+    debounce = setTimeout(() => {
+      fetch('/api/search?q=' + encodeURIComponent(q))
+        .then(r => r.json())
+        .then(data => {
+          if (!data.length) { box.innerHTML = '<div style="padding:14px;font-size:13px;color:#6b7280;">No students found</div>'; }
+          else {
+            box.innerHTML = data.map(s => `
+              <a href="/students/${s.id}">
+                <div class="sr-name">${s.name}</div>
+                <div class="sr-meta">Class ${s.class_label} · Roll ${s.roll || '-'} · ${s.uid}</div>
+              </a>`).join('');
+          }
+          box.classList.add('show');
+        });
+    }, 250);
+  });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.topbar-search')) {
+      document.getElementById('searchResults').classList.remove('show');
+    }
+  });
+}
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

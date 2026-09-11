@@ -1,0 +1,31 @@
+# Database — never commit real school data
+school.db
+
+# Uploaded student/teacher/gallery photos
+static/uploads/*
+!static/uploads/.gitkeep
+
+# Environment secrets — copy .env.example → .env and fill in your values
+.env
+.env.local
+
+!static/uploads/.gitkeep
+
+# Python virtual environment
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment secrets
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

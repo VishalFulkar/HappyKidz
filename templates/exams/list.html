@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Exams{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Exams</h1><p class="desc">Create unlimited exams — old results are never overwritten</p></div>
+  <div class="page-actions">
+    {% if session.get('role') == 'admin' %}<a href="{{ url_for('exam_add') }}" class="btn btn-primary">+ Create Exam</a>{% endif %}
+  </div>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Exam Name</th><th>Session</th><th>Class</th><th>Date</th><th></th></tr></thead>
+    <tbody>
+      {% for e in exams %}
+      <tr>
+        <td><strong>{{ e.exam_name }}</strong></td>
+        <td>{{ e.academic_session or '-' }}</td>
+        <td>{% if e.class_name %}<span class="badge badge-blue">{{ e.class_name }}-{{ e.section }}</span>{% else %}All Classes{% endif %}</td>
+        <td>{{ e.exam_date or '-' }}</td>
+        <td>
+          <a href="{{ url_for('marks_entry', class_id=e.class_id, exam_id=e.id) }}" class="btn btn-secondary btn-sm">Enter Marks</a>
+          {% if session.get('role') == 'admin' %}
+          <form method="POST" action="{{ url_for('exam_delete', eid=e.id) }}" style="display:inline;" onsubmit="return confirm('Delete this exam and all its results?');">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" style="text-align:center;color:var(--ink-500);padding:32px;">No exams created yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

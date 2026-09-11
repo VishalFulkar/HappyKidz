@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Enter Results{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Enter Results</h1><p class="desc">Select student and exam, enter all subject marks, save once.</p></div></div>
+
+<div class="card" style="margin-bottom:20px;">
+  <form method="GET" class="form-grid" style="grid-template-columns:1fr 1fr 1fr; align-items:end;">
+    <div class="form-group">
+      <label>Class</label>
+      <select name="class_id" onchange="this.form.submit()">
+        <option value="">Select class</option>
+        {% for c in classes %}
+        <option value="{{ c.id }}" {{ 'selected' if class_id|string == c.id|string }}>{{ c.class_name }}-{{ c.section }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Student</label>
+      <select name="student_id" onchange="this.form.submit()" {{ 'disabled' if not class_id }}>
+        <option value="">Select student</option>
+        {% for s in students %}
+        <option value="{{ s.id }}" {{ 'selected' if student_id|string == s.id|string }}>{{ s.full_name }} (Roll {{ s.roll_number or '-' }})</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Exam</label>
+      <select name="exam_id" onchange="this.form.submit()" {{ 'disabled' if not class_id }}>
+        <option value="">Select exam</option>
+        {% for e in exams %}
+        <option value="{{ e.id }}" {{ 'selected' if exam_id|string == e.id|string }}>{{ e.exam_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </form>
+</div>
+
+{% if student and exam_subjects %}
+<div class="card">
+  <div class="card-title">{{ student.full_name }} — All Subjects</div>
+  <form method="POST">
+    <input type="hidden" name="class_id" value="{{ class_id }}">
+    <input type="hidden" name="student_id" value="{{ student_id }}">
+    <input type="hidden" name="exam_id" value="{{ exam_id }}">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Subject</th><th style="width:200px;">Marks Obtained</th><th>Max Marks</th></tr></thead>
+        <tbody>
+          {% for es in exam_subjects %}
+          <tr>
+            <td>{{ es.subject_name }}</td>
+            <td><input type="number" step="0.5" min="0" max="{{ es.max_marks }}" name="marks_{{ es.subject_id }}" value="{{ existing_marks.get(es.subject_id, '') }}"></td>
+            <td>{{ es.max_marks }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <button type="submit" class="btn btn-primary btn-lg" style="margin-top:18px;">Save Complete Result</button>
+  </form>
+</div>
+{% elif student_id and exam_id %}
+<div class="card"><p>This exam has no subjects configured yet. Add subjects to the exam first.</p></div>
+{% endif %}
+{% endblock %}

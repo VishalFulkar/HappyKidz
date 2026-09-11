@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Attendance Reports{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Attendance Reports</h1><p class="desc">Class-wise and student-wise attendance percentages</p></div>
+  <div class="page-actions no-print"><button onclick="window.print()" class="btn btn-secondary">Print</button></div>
+</div>
+<div class="card" style="margin-bottom:20px;">
+  <form method="GET" class="form-grid" style="grid-template-columns:1fr auto; align-items:end;">
+    <div class="form-group">
+      <label>Class</label>
+      <select name="class_id" onchange="this.form.submit()">
+        <option value="">Select class</option>
+        {% for c in classes %}
+        <option value="{{ c.id }}" {{ 'selected' if class_id|string == c.id|string }}>{{ c.class_name }}-{{ c.section }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Load</button>
+  </form>
+</div>
+{% if report %}
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Roll No.</th><th>Name</th><th>Total Days</th><th>Present</th><th>Absent</th><th>Percentage</th></tr></thead>
+    <tbody>
+      {% for r in report %}
+      <tr>
+        <td>{{ r.student.roll_number or '-' }}</td>
+        <td>{{ r.student.full_name }}</td>
+        <td>{{ r.total }}</td>
+        <td>{{ r.present }}</td>
+        <td>{{ r.absent }}</td>
+        <td><span class="badge {{ 'badge-green' if r.pct >= 75 else ('badge-amber' if r.pct >= 50 else 'badge-red') }}">{{ r.pct }}%</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% elif class_id %}
+<div class="card"><p>No attendance records for this class yet.</p></div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "public/base_public.html" %}
+{% block title %}Admissions · {{ school_name }}{% endblock %}
+{% block content %}
+<section class="section" style="max-width:640px;">
+  <div class="section-head">
+    <div class="eyebrow">Admissions</div>
+    <h2>Apply for Admission</h2>
+    <p>Fill in the details below and our admissions team will get in touch with you shortly.</p>
+  </div>
+  <div class="card">
+    <form method="POST">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Student Name *</label>
+          <input type="text" name="student_name" required>
+        </div>
+        <div class="form-group">
+          <label>Parent / Guardian Name *</label>
+          <input type="text" name="parent_name" required>
+        </div>
+        <div class="form-group">
+          <label>Class Applied For *</label>
+          <select name="class_applied" required>
+            <option value="">Select class</option>
+            {% for i in range(1,11) %}<option value="Class {{ i }}">Class {{ i }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email">
+        </div>
+        <div class="form-group">
+          <label>Phone Number *</label>
+          <input type="tel" name="phone" required>
+        </div>
+        <div class="form-group full">
+          <label>Message / Additional Information</label>
+          <textarea name="message" placeholder="Anything you'd like us to know..."></textarea>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg btn-block" style="margin-top:16px;">Submit Application</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

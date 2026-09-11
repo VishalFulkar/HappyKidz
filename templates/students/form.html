@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit Student' if student else 'Add Student' }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>{{ 'Edit Student' if student else 'Add New Student' }}</h1>
+    <p class="desc">Fill in the student's complete details below, then save.</p>
+  </div>
+</div>
+
+<div class="card">
+  <form method="POST" enctype="multipart/form-data">
+
+    <div class="fieldset-title">Personal Details</div>
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Student Full Name *</label>
+        <input type="text" name="full_name" required value="{{ student.full_name if student else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Admission Number</label>
+        <input type="text" name="admission_number" value="{{ student.admission_number if student else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Roll Number</label>
+        <input type="text" name="roll_number" value="{{ student.roll_number if student else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Class</label>
+        <select name="class_id">
+          <option value="">Select class</option>
+          {% for c in classes %}
+          <option value="{{ c.id }}" {{ 'selected' if student and student.class_id==c.id }}>{{ c.class_name }}-{{ c.section }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Date of Birth</label>
+        <input type="date" name="dob" value="{{ student.dob if student else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Gender</label>
+        <select name="gender">
+          <option value="">Select</option>
+          <option value="Male" {{ 'selected' if student and student.gender=='Male' }}>Male</option>
+          <option value="Female" {{ 'selected' if student and student.gender=='Female' }}>Female</option>
+          <option value="Other" {{ 'selected' if student and student.gender=='Other' }}>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Blood Group</label>
+        <input type="text" name="blood_group" placeholder="e.g. B+" value="{{ student.blood_group if student else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Student Photo</label>
+        <input type="file" name="photo" accept="image/*">
+      </div>
+    </div>
+
+    <div class="fieldset-title">Parent / Guardian Details</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Father's Name</label><input type="text" name="father_name" value="{{ student.father_name if student else '' }}"></div>
+      <div class="form-group"><label>Mother's Name</label><input type="text" name="mother_name" value="{{ student.mother_name if student else '' }}"></div>
+      <div class="form-group"><label>Guardian Name</label><input type="text" name="guardian_name" value="{{ student.guardian_name if student else '' }}"></div>
+      <div class="form-group"><label>Parent/Guardian Contact</label><input type="tel" name="parent_contact" value="{{ student.parent_contact if student else '' }}"></div>
+      <div class="form-group"><label>Alternate Phone</label><input type="tel" name="alternate_phone" value="{{ student.alternate_phone if student else '' }}"></div>
+      <div class="form-group"><label>Emergency Contact</label><input type="tel" name="emergency_contact" value="{{ student.emergency_contact if student else '' }}"></div>
+    </div>
+
+    <div class="fieldset-title">Identification Details</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Aadhaar Number</label><input type="text" name="aadhaar_number" value="{{ student.aadhaar_number if student else '' }}"></div>
+      <div class="form-group"><label>SSSM ID</label><input type="text" name="sssm_id" value="{{ student.sssm_id if student else '' }}"></div>
+      <div class="form-group"><label>Family ID</label><input type="text" name="family_id" value="{{ student.family_id if student else '' }}"></div>
+      <div class="form-group"><label>Category</label><input type="text" name="category" placeholder="General / OBC / SC / ST" value="{{ student.category if student else '' }}"></div>
+      <div class="form-group"><label>Caste</label><input type="text" name="caste" value="{{ student.caste if student else '' }}"></div>
+      <div class="form-group"><label>Religion</label><input type="text" name="religion" value="{{ student.religion if student else '' }}"></div>
+    </div>
+
+    <div class="fieldset-title">Address</div>
+    <div class="form-grid">
+      <div class="form-group full"><label>Full Address</label><textarea name="address">{{ student.address if student else '' }}</textarea></div>
+      <div class="form-group"><label>City</label><input type="text" name="city" value="{{ student.city if student else '' }}"></div>
+      <div class="form-group"><label>State</label><input type="text" name="state" value="{{ student.state if student else '' }}"></div>
+      <div class="form-group"><label>Pincode</label><input type="text" name="pincode" value="{{ student.pincode if student else '' }}"></div>
+    </div>
+
+    <div class="fieldset-title">Family &amp; Health Details</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Family Annual Income</label><input type="text" name="family_annual_income" value="{{ student.family_annual_income if student else '' }}"></div>
+      <div class="form-group"><label>Parent Occupation</label><input type="text" name="parent_occupation" value="{{ student.parent_occupation if student else '' }}"></div>
+      <div class="form-group full"><label>Medical Issues / Allergies</label><textarea name="medical_issues">{{ student.medical_issues if student else '' }}</textarea></div>
+    </div>
+
+    <div class="fieldset-title">Bank Details</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Account Number</label><input type="text" name="bank_account_number" value="{{ student.bank_account_number if student else '' }}"></div>
+      <div class="form-group"><label>IFSC Code</label><input type="text" name="bank_ifsc" value="{{ student.bank_ifsc if student else '' }}"></div>
+      <div class="form-group"><label>Bank Name</label><input type="text" name="bank_name" value="{{ student.bank_name if student else '' }}"></div>
+      <div class="form-group"><label>Account Holder Name</label><input type="text" name="bank_account_holder" value="{{ student.bank_account_holder if student else '' }}"></div>
+    </div>
+
+    <div class="fieldset-title">Academic &amp; Contact Details</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Previous School</label><input type="text" name="previous_school" value="{{ student.previous_school if student else '' }}"></div>
+      <div class="form-group"><label>Previous Class</label><input type="text" name="previous_class" value="{{ student.previous_class if student else '' }}"></div>
+      <div class="form-group"><label>Admission Date</label><input type="date" name="admission_date" value="{{ student.admission_date if student else '' }}"></div>
+      <div class="form-group"><label>Email</label><input type="email" name="email" value="{{ student.email if student else '' }}"></div>
+      <div class="form-group"><label>Phone</label><input type="tel" name="phone" value="{{ student.phone if student else '' }}"></div>
+      <div class="form-group full"><label>Other Information</label><textarea name="other_info">{{ student.other_info if student else '' }}</textarea></div>
+    </div>
+
+    <div style="display:flex; gap:12px; margin-top:24px;">
+      <button type="submit" class="btn btn-primary btn-lg">Save Student</button>
+      <a href="{{ url_for('student_list') }}" class="btn btn-secondary btn-lg">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

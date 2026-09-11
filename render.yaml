@@ -1,0 +1,30 @@
+# render.yaml — Render deployment configuration
+# Docs: https://render.com/docs/blueprint-spec
+#
+# PostgreSQL is hosted on Neon (https://neon.tech) — free tier.
+# Set DATABASE_URL in Render's environment variables dashboard
+# using your Neon connection string.
+
+services:
+  - type: web
+    name: hkps-school
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: waitress-serve --listen=0.0.0.0:$PORT production:app
+    plan: free
+
+    envVars:
+      - key: HKPS_PRODUCTION
+        value: "1"
+      - key: COOKIE_SECURE
+        value: "1"
+      - key: SECRET_KEY
+        generateValue: true          # Render auto-generates a secure random value
+      - key: ADMIN_PASSWORD
+        generateValue: true          # Check Render logs on first deploy for the value
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: DATABASE_URL
+        sync: false                  # Set manually in Render dashboard from Neon
+      - key: CLOUDINARY_URL
+        sync: false                  # Set manually in Render dashboard from Cloudinary

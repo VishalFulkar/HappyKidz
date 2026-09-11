@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="{{ school_name }}, {{ school_place }} — school information, admissions, events and campus life.">
+<title>{% block title %}{{ school_name }}{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="public-site">
+<div class="flash-wrap">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}<div class="flash flash-{{ category }}">{{ message }}</div>{% endfor %}
+  {% endwith %}
+</div>
+<header class="public-header">
+  <div class="public-nav">
+    <a href="{{ url_for('home') }}" class="brand public-brand">
+      <div class="brand-badge">HK</div>
+      <div><strong>{{ school_name }}</strong><div class="brand-sub">{{ school_place }}</div></div>
+    </a>
+    <nav class="nav-links">
+      <a href="{{ url_for('home') }}#about">About</a>
+      <a href="{{ url_for('home') }}#facilities">Facilities</a>
+      <a href="{{ url_for('public_gallery') }}">Gallery</a>
+      <a href="{{ url_for('home') }}#notices">Notices</a>
+      <a href="{{ url_for('admission') }}">Admissions</a>
+      <a href="{{ url_for('contact') }}">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="{{ url_for('login') }}" class="btn btn-secondary btn-sm">Portal Login</a>
+      <a href="{{ url_for('admission') }}" class="btn btn-primary btn-sm">Apply Now</a>
+    </div>
+  </div>
+</header>
+{% block content %}{% endblock %}
+<footer class="public-footer">
+  <div class="footer-inner">
+    <div class="footer-main">
+      <div class="brand footer-brand"><div class="brand-badge">HK</div><strong>{{ school_name }}</strong></div>
+      <p>Learning, character and joyful school life — all in one place.</p>
+    </div>
+    <div><h4>Explore</h4><a href="{{ url_for('home') }}#about">About</a><a href="{{ url_for('home') }}#facilities">Facilities</a><a href="{{ url_for('public_gallery') }}">Gallery</a><a href="{{ url_for('admission') }}">Admissions</a></div>
+    <div><h4>School Office</h4><a href="{{ url_for('home') }}#notices">Notices</a><a href="{{ url_for('home') }}#events">Events</a><a href="{{ url_for('contact') }}">Contact</a><a href="{{ url_for('login') }}">Portal Login</a></div>
+    <div><h4>Contact</h4>{% if site_settings.address %}<p>{{ site_settings.address }}</p>{% endif %}{% if site_settings.phone %}<p>{{ site_settings.phone }}</p>{% endif %}{% if site_settings.email %}<p>{{ site_settings.email }}</p>{% endif %}{% if not site_settings.address and not site_settings.phone and not site_settings.email %}<p>Contact details can be added by the school office.</p>{% endif %}</div>
+  </div>
+  <div class="footer-bottom"><span>&copy; {{ current_year }} {{ school_name }}</span><span>{{ school_place }}</span></div>
+</footer>
+<script>setTimeout(()=>document.querySelectorAll('.flash').forEach(f=>f.style.display='none'),4500);</script>
+</body>
+</html>

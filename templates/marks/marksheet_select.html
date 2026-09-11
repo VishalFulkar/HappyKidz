@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Generate Marksheet{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{{ 'My Results' if student_only else 'Generate Marksheet' }}</h1><p class="desc">Select a student and exam to generate a professional marksheet.</p></div></div>
+
+<div class="card" style="max-width:640px;">
+  {% if student_only %}
+    <form method="GET" action="{{ url_for('marksheet_view') }}">
+      <input type="hidden" name="student_id" value="{{ sid }}">
+      <div class="form-group">
+        <label>Exam</label>
+        <select name="exam_id" required>
+          <option value="">Select exam</option>
+          {% for e in exams %}<option value="{{ e.id }}">{{ e.exam_name }} — {{ e.academic_session }}</option>{% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg" style="margin-top:14px;">View Marksheet</button>
+    </form>
+  {% else %}
+    <form method="GET" action="{{ url_for('marksheet_view') }}" id="mForm">
+      <div class="form-group">
+        <label>Class</label>
+        <select id="classSel">
+          <option value="">Select class</option>
+          {% for c in classes %}<option value="{{ c.id }}">{{ c.class_name }}-{{ c.section }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="form-group" style="margin-top:14px;">
+        <label>Student</label>
+        <select name="student_id" id="studentSel" required disabled>
+          <option value="">Select class first</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-top:14px;">
+        <label>Exam</label>
+        <select name="exam_id" id="examSel" required disabled>
+          <option value="">Select class first</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg" style="margin-top:18px;">Generate Marksheet</button>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+{% if not student_only %}
+<script>
+document.getElementById('classSel').addEventListener('change', function() {
+  const classId = this.value;
+  const studentSel = document.getElementById('studentSel');
+  const examSel = document.getElementById('examSel');
+  studentSel.innerHTML = '<option value="">Loading...</option>';
+  examSel.innerHTML = '<option value="">Loading...</option>';
+  studentSel.disabled = true; examSel.disabled = true;
+  if (!classId) return;
+  fetchOptions(classId);
+});
+function fetchOptions(classId) {
+  fetch(`/marksheet/options?class_id=${classId}`)
+    .then(r => r.json())
+    .then(data => {
+      const studentSel = document.getElementById('studentSel');
+      const examSel = document.getElementById('examSel');
+      studentSel.innerHTML = '<option value="">Select student</option>' +
+        data.students.map(s => `<option value="${s.id}">${s.full_name} (Roll ${s.roll_number || '-'})</option>`).join('');
+      examSel.innerHTML = '<option value="">Select exam</option>' +
+        data.exams.map(e => `<option value="${e.id}">${e.exam_name}</option>`).join('');
+      studentSel.disabled = false; examSel.disabled = false;
+    });
+}
+</script>
+{% endif %}
+{% endblock %}

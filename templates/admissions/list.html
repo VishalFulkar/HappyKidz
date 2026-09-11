@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Admissions{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Admission Applications</h1><p class="desc">Review and process applications from the public admission form</p></div></div>
+
+<div style="display:flex; gap:10px; margin-bottom:18px;">
+  <a href="{{ url_for('admission_list') }}" class="btn {{ 'btn-primary' if not status else 'btn-secondary' }} btn-sm">All</a>
+  <a href="{{ url_for('admission_list', status='pending') }}" class="btn {{ 'btn-primary' if status=='pending' else 'btn-secondary' }} btn-sm">Pending</a>
+  <a href="{{ url_for('admission_list', status='approved') }}" class="btn {{ 'btn-primary' if status=='approved' else 'btn-secondary' }} btn-sm">Approved</a>
+  <a href="{{ url_for('admission_list', status='rejected') }}" class="btn {{ 'btn-primary' if status=='rejected' else 'btn-secondary' }} btn-sm">Rejected</a>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Student</th><th>Parent</th><th>Class Applied</th><th>Contact</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for a in apps %}
+      <tr>
+        <td><strong>{{ a.student_name }}</strong></td>
+        <td>{{ a.parent_name or '-' }}</td>
+        <td>{{ a.class_applied or '-' }}</td>
+        <td>{{ a.phone or a.email or '-' }}</td>
+        <td><span class="badge {{ 'badge-amber' if a.status=='pending' else ('badge-green' if a.status=='approved' else 'badge-red') }}">{{ a.status }}</span></td>
+        <td>
+          {% if a.status == 'pending' %}
+          <form method="POST" action="{{ url_for('admission_update', aid=a.id, action='approve') }}" style="display:inline;">
+            <button type="submit" class="btn btn-success btn-sm">Approve</button>
+          </form>
+          <form method="POST" action="{{ url_for('admission_update', aid=a.id, action='reject') }}" style="display:inline;">
+            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" style="text-align:center;color:var(--ink-500);padding:32px;">No applications found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

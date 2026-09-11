@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Login Accounts{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Login Accounts</h1><p class="desc">Create portal login credentials for teachers and students</p></div></div>
+
+<div class="card" style="margin-bottom:20px;">
+  <div class="card-title">Create Account</div>
+  <form method="POST" class="form-grid" id="acctForm">
+    <div class="form-group"><label>Username</label><input type="text" name="username" required></div>
+    <div class="form-group"><label>Password</label><input type="password" name="password" required></div>
+    <div class="form-group">
+      <label>Role</label>
+      <select name="role" id="roleSel" onchange="toggleLinked()">
+        <option value="admin">Admin</option>
+        <option value="teacher" selected>Teacher</option>
+        <option value="student">Student</option>
+      </select>
+    </div>
+    <div class="form-group" id="linkedWrap">
+      <label>Link to</label>
+      <select name="linked_id" id="linkedSel"></select>
+    </div>
+    <button type="submit" class="btn btn-primary" style="grid-column:1/-1;">Create Account</button>
+  </form>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Username</th><th>Role</th><th></th></tr></thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.username }}</td>
+        <td><span class="badge badge-blue">{{ u.role }}</span></td>
+        <td>
+          <form method="POST" action="{{ url_for('account_delete', uid=u.id) }}" onsubmit="return confirm('Remove this account?');">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+const teachers = [{% for t in teachers %}{id:{{ t.id }}, name:"{{ t.full_name|e }}"},{% endfor %}];
+const students = [{% for s in students %}{id:{{ s.id }}, name:"{{ s.full_name|e }}"},{% endfor %}];
+function toggleLinked() {
+  const role = document.getElementById('roleSel').value;
+  const linkedSel = document.getElementById('linkedSel');
+  const wrap = document.getElementById('linkedWrap');
+  if (role === 'admin') { wrap.style.display = 'none'; linkedSel.innerHTML=''; return; }
+  wrap.style.display = 'flex';
+  const list = role === 'teacher' ? teachers : students;
+  linkedSel.innerHTML = list.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+}
+toggleLinked();
+</script>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Website Manager{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Website Manager</h1><p class="desc">Update the school's public website without writing or changing code.</p></div><a href="{{ url_for('home') }}" target="_blank" class="btn btn-primary">View Website ↗</a></div>
+<div class="website-manager-grid">
+  <a class="website-tool-card" href="{{ url_for('gallery_manage') }}"><div class="tool-icon">📸</div><div><h3>Photo Gallery</h3><p>Create albums and upload school photos.</p><strong>{{ album_count }} albums · {{ photo_count }} photos</strong></div></a>
+  <a class="website-tool-card" href="{{ url_for('website_settings') }}"><div class="tool-icon">⚙️</div><div><h3>Website Details</h3><p>Update tagline, address, phone and email.</p><strong>School information</strong></div></a>
+  <a class="website-tool-card" href="{{ url_for('social_settings') }}"><div class="tool-icon">📱</div><div><h3>Social Media</h3><p>Update Instagram, YouTube, Facebook and WhatsApp.</p><strong>{% if social and (social.instagram or social.youtube or social.facebook or social.whatsapp) %}Links configured{% else %}No links configured{% endif %}</strong></div></a>
+  <a class="website-tool-card" href="{{ url_for('notice_list') }}"><div class="tool-icon">📢</div><div><h3>Notices</h3><p>Publish announcements for parents and visitors.</p><strong>{{ notice_count }} published notices</strong></div></a>
+  <a class="website-tool-card" href="{{ url_for('event_list') }}"><div class="tool-icon">📅</div><div><h3>Events</h3><p>Add upcoming school events.</p><strong>{{ event_count }} events</strong></div></a>
+</div>
+<div class="card manager-tip"><strong>Simple rule</strong><span>No coding required. Add or update information here, save it, and the public website handles the rest.</span></div>
+{% endblock %}

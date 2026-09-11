@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Messages{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Contact Messages</h1><p class="desc">Messages submitted through the public contact form</p></div></div>
+{% for m in msgs %}
+<div class="card" style="margin-bottom:14px;">
+  <div style="display:flex; justify-content:space-between;">
+    <strong>{{ m.name }}</strong>
+    <span style="color:var(--ink-500); font-size:12.5px;">{{ m.created_at }}</span>
+  </div>
+  <p style="margin-top:6px;">{{ m.email or 'No email provided' }}</p>
+  <p style="margin-top:6px;">{{ m.message }}</p>
+</div>
+{% else %}
+<div class="card"><p>No messages received yet.</p></div>
+{% endfor %}
+{% endblock %}

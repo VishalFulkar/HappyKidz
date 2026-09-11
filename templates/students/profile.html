@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% block title %}{{ student.full_name }}{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div class="profile-header">
+    {% if student.photo %}
+      <img class="profile-photo" src="{{ media_url(student.photo) }}">
+    {% else %}
+      <div class="profile-photo" style="display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:var(--blue-600);">{{ student.full_name[0]|upper }}</div>
+    {% endif %}
+    <div>
+      <h1>{{ student.full_name }}</h1>
+      <p class="desc">
+        {{ student.student_uid }}
+        {% if student.class_name %} · Class {{ student.class_name }}-{{ student.section }}{% endif %}
+        {% if student.roll_number %} · Roll No. {{ student.roll_number }}{% endif %}
+      </p>
+    </div>
+  </div>
+  <div class="page-actions no-print">
+    {% if session.get('role') == 'admin' %}
+    <a href="{{ url_for('student_edit', sid=student.id) }}" class="btn btn-secondary">Edit Profile</a>
+    {% endif %}
+    <button onclick="window.print()" class="btn btn-secondary">Print Profile</button>
+    <a href="{{ url_for('marksheet_select') }}" class="btn btn-primary">View Marksheet</a>
+  </div>
+</div>
+
+<div class="tabs no-print">
+  <button class="tab-btn active" onclick="showTab('overview', this)">Overview</button>
+  <button class="tab-btn" onclick="showTab('personal', this)">Personal Details</button>
+  <button class="tab-btn" onclick="showTab('parents', this)">Parents</button>
+  <button class="tab-btn" onclick="showTab('address', this)">Address</button>
+  <button class="tab-btn" onclick="showTab('academic', this)">Academic</button>
+  <button class="tab-btn" onclick="showTab('attendance', this)">Attendance</button>
+  <button class="tab-btn" onclick="showTab('results', this)">Results</button>
+  <button class="tab-btn" onclick="showTab('fees', this)">Fees</button>
+  <button class="tab-btn" onclick="showTab('timetable', this)">Timetable</button>
+</div>
+
+<div id="tab-overview" class="tab-panel active">
+  <div class="grid-3">
+    <div class="card"><div class="card-title">Attendance</div><div style="font-size:28px;font-weight:800;color:var(--navy-950);">{{ att_pct if att_pct is not none else '-' }}%</div><p>{{ att_present }} present of {{ att_total }} days</p></div>
+    <div class="card"><div class="card-title">Blood Group</div><div style="font-size:28px;font-weight:800;color:var(--navy-950);">{{ student.blood_group or '-' }}</div><p>Emergency: {{ student.emergency_contact or '-' }}</p></div>
+    <div class="card"><div class="card-title">Fee Records</div><div style="font-size:28px;font-weight:800;color:var(--navy-950);">{{ fees|length }}</div><p>{{ fees|selectattr('payment_status','equalto','paid')|list|length }} paid</p></div>
+  </div>
+  <div class="card" style="margin-top:20px;">
+    <div class="card-title">Quick Info</div>
+    <div class="info-grid">
+      <div class="info-item"><div class="k">Father's Name</div><div class="v">{{ student.father_name or '-' }}</div></div>
+      <div class="info-item"><div class="k">Mother's Name</div><div class="v">{{ student.mother_name or '-' }}</div></div>
+      <div class="info-item"><div class="k">Contact</div><div class="v">{{ student.parent_contact or '-' }}</div></div>
+      <div class="info-item"><div class="k">Date of Birth</div><div class="v">{{ student.dob or '-' }}</div></div>
+      <div class="info-item"><div class="k">Gender</div><div class="v">{{ student.gender or '-' }}</div></div>
+      <div class="info-item"><div class="k">Admission Date</div><div class="v">{{ student.admission_date or '-' }}</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-personal" class="tab-panel">
+  <div class="card">
+    <div class="card-title">Personal & Identification Details</div>
+    <div class="info-grid">
+      <div class="info-item"><div class="k">Admission Number</div><div class="v">{{ student.admission_number or '-' }}</div></div>
+      <div class="info-item"><div class="k">Roll Number</div><div class="v">{{ student.roll_number or '-' }}</div></div>
+      <div class="info-item"><div class="k">Date of Birth</div><div class="v">{{ student.dob or '-' }}</div></div>
+      <div class="info-item"><div class="k">Gender</div><div class="v">{{ student.gender or '-' }}</div></div>
+      <div class="info-item"><div class="k">Blood Group</div><div class="v">{{ student.blood_group or '-' }}</div></div>
+      <div class="info-item"><div class="k">Aadhaar Number</div><div class="v">{{ student.aadhaar_number or '-' }}</div></div>
+      <div class="info-item"><div class="k">SSSM ID</div><div class="v">{{ student.sssm_id or '-' }}</div></div>
+      <div class="info-item"><div class="k">Family ID</div><div class="v">{{ student.family_id or '-' }}</div></div>
+      <div class="info-item"><div class="k">Category</div><div class="v">{{ student.category or '-' }}</div></div>
+      <div class="info-item"><div class="k">Caste</div><div class="v">{{ student.caste or '-' }}</div></div>
+      <div class="info-item"><div class="k">Religion</div><div class="v">{{ student.religion or '-' }}</div></div>
+      <div class="info-item"><div class="k">Medical Issues</div><div class="v">{{ student.medical_issues or '-' }}</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-parents" class="tab-panel">
+  <div class="card">
+    <div class="card-title">Parent / Guardian Details</div>
+    <div class="info-grid">
+      <div class="info-item"><div class="k">Father's Name</div><div class="v">{{ student.father_name or '-' }}</div></div>
+      <div class="info-item"><div class="k">Mother's Name</div><div class="v">{{ student.mother_name or '-' }}</div></div>
+      <div class="info-item"><div class="k">Guardian Name</div><div class="v">{{ student.guardian_name or '-' }}</div></div>
+      <div class="info-item"><div class="k">Parent Contact</div><div class="v">{{ student.parent_contact or '-' }}</div></div>
+      <div class="info-item"><div class="k">Alternate Phone</div><div class="v">{{ student.alternate_phone or '-' }}</div></div>
+      <div class="info-item"><div class="k">Emergency Contact</div><div class="v">{{ student.emergency_contact or '-' }}</div></div>
+      <div class="info-item"><div class="k">Parent Occupation</div><div class="v">{{ student.parent_occupation or '-' }}</div></div>
+      <div class="info-item"><div class="k">Family Annual Income</div><div class="v">{{ student.family_annual_income or '-' }}</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-address" class="tab-panel">
+  <div class="card">
+    <div class="card-title">Address</div>
+    <div class="info-grid">
+      <div class="info-item" style="grid-column:1/-1;"><div class="k">Full Address</div><div class="v">{{ student.address or '-' }}</div></div>
+      <div class="info-item"><div class="k">City</div><div class="v">{{ student.city or '-' }}</div></div>
+      <div class="info-item"><div class="k">State</div><div class="v">{{ student.state or '-' }}</div></div>
+      <div class="info-item"><div class="k">Pincode</div><div class="v">{{ student.pincode or '-' }}</div></div>
+    </div>
+    <div class="card-title" style="margin-top:22px;">Bank Details</div>
+    <div class="info-grid">
+      <div class="info-item"><div class="k">Account Number</div><div class="v">{{ student.bank_account_number or '-' }}</div></div>
+      <div class="info-item"><div class="k">IFSC Code</div><div class="v">{{ student.bank_ifsc or '-' }}</div></div>
+      <div class="info-item"><div class="k">Bank Name</div><div class="v">{{ student.bank_name or '-' }}</div></div>
+      <div class="info-item"><div class="k">Account Holder</div><div class="v">{{ student.bank_account_holder or '-' }}</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-academic" class="tab-panel">
+  <div class="card">
+    <div class="card-title">Academic History</div>
+    <div class="info-grid">
+      <div class="info-item"><div class="k">Previous School</div><div class="v">{{ student.previous_school or '-' }}</div></div>
+      <div class="info-item"><div class="k">Previous Class</div><div class="v">{{ student.previous_class or '-' }}</div></div>
+      <div class="info-item"><div class="k">Admission Date</div><div class="v">{{ student.admission_date or '-' }}</div></div>
+      <div class="info-item" style="grid-column:1/-1;"><div class="k">Other Information</div><div class="v">{{ student.other_info or '-' }}</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-attendance" class="tab-panel">
+  <div class="card">
+    <div class="card-title">Attendance Summary</div>
+    <div class="info-grid">
+      <div class="info-item"><div class="k">Total Days Recorded</div><div class="v">{{ att_total }}</div></div>
+      <div class="info-item"><div class="k">Days Present</div><div class="v">{{ att_present }}</div></div>
+      <div class="info-item"><div class="k">Attendance %</div><div class="v">{{ att_pct if att_pct is not none else '-' }}%</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-results" class="tab-panel">
+  <div class="card">
+    <div class="card-title">Exam Results</div>
+    {% if exams %}
+    <div class="table-wrap"><table><thead><tr><th>Exam</th><th>Session</th><th>Date</th><th></th></tr></thead><tbody>
+      {% for e in exams %}
+      <tr><td>{{ e.exam_name }}</td><td>{{ e.academic_session or '-' }}</td><td>{{ e.exam_date or '-' }}</td>
+      <td><a class="btn btn-secondary btn-sm" href="{{ url_for('marksheet_view', student_id=student.id, exam_id=e.id) }}">View Marksheet</a></td></tr>
+      {% endfor %}
+    </tbody></table></div>
+    {% else %}<p>No exam results recorded yet.</p>{% endif %}
+  </div>
+</div>
+
+<div id="tab-fees" class="tab-panel">
+  <div class="card">
+    <div class="card-title">Fee Records</div>
+    {% if fees %}
+    <div class="table-wrap"><table><thead><tr><th>Amount</th><th>Status</th><th>Due Date</th><th>Payment Date</th><th>Receipt</th><th></th></tr></thead><tbody>
+      {% for f in fees %}
+      <tr>
+        <td>₹{{ '%.0f'|format(f.amount) }}</td>
+        <td><span class="badge {{ 'badge-green' if f.payment_status=='paid' else ('badge-amber' if f.payment_status=='partial' else 'badge-red') }}">{{ f.payment_status }}</span></td>
+        <td>{{ f.due_date or '-' }}</td>
+        <td>{{ f.payment_date or '-' }}</td>
+        <td>{{ f.receipt_number or '-' }}</td>
+        <td>{% if f.payment_status=='paid' %}<a href="{{ url_for('fees_receipt', fee_id=f.id) }}" class="btn btn-secondary btn-sm">Receipt</a>{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody></table></div>
+    {% else %}<p>No fee records yet.</p>{% endif %}
+  </div>
+</div>
+
+<div id="tab-timetable" class="tab-panel">
+  <div class="card">
+    <div class="card-title">Class Timetable</div>
+    {% if timetable %}
+    <div class="table-wrap"><table><thead><tr><th>Day</th><th>Period</th><th>Subject</th><th>Teacher</th></tr></thead><tbody>
+      {% for t in timetable %}
+      <tr><td>{{ t.day_of_week }}</td><td>{{ t.period_number }}</td><td>{{ t.subject_name or '-' }}</td><td>{{ t.teacher_name or '-' }}</td></tr>
+      {% endfor %}
+    </tbody></table></div>
+    {% else %}<p>No timetable set for this class yet.</p>{% endif %}
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+{% endblock %}

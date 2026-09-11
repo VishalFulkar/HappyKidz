@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Students{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Students</h1>
+    <p class="desc">{{ students|length }} student(s) found</p>
+  </div>
+  <div class="page-actions">
+    {% if session.get('role') == 'admin' %}
+    <a href="{{ url_for('student_add') }}" class="btn btn-primary">+ Add Student</a>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card" style="margin-bottom:20px;">
+  <form method="GET" class="form-grid" style="grid-template-columns: 2fr 1fr auto; align-items:end;">
+    <div class="form-group">
+      <label>Search</label>
+      <input type="text" name="q" value="{{ q }}" placeholder="Name, ID, roll number, father's name, phone...">
+    </div>
+    <div class="form-group">
+      <label>Class</label>
+      <select name="class_id">
+        <option value="">All Classes</option>
+        {% for c in classes %}
+        <option value="{{ c.id }}" {{ 'selected' if class_id|string == c.id|string }}>{{ c.class_name }}-{{ c.section }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead><tr><th></th><th>Name</th><th>Student ID</th><th>Class</th><th>Roll No.</th><th>Father's Name</th><th>Phone</th><th></th></tr></thead>
+    <tbody>
+      {% for s in students %}
+      <tr>
+        <td>{% if s.photo %}<img class="table-avatar" src="{{ media_url(s.photo) }}">{% else %}<div class="table-avatar"></div>{% endif %}</td>
+        <td><strong>{{ s.full_name }}</strong></td>
+        <td>{{ s.student_uid }}</td>
+        <td>{% if s.class_name %}<span class="badge badge-blue">{{ s.class_name }}-{{ s.section }}</span>{% else %}-{% endif %}</td>
+        <td>{{ s.roll_number or '-' }}</td>
+        <td>{{ s.father_name or '-' }}</td>
+        <td>{{ s.phone or s.parent_contact or '-' }}</td>
+        <td><a href="{{ url_for('student_profile', sid=s.id) }}" class="btn btn-secondary btn-sm">View Profile</a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" style="text-align:center; color:var(--ink-500); padding:32px;">No students found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

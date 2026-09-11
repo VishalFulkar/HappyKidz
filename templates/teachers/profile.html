@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{ teacher.full_name }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div class="profile-header">
+    {% if teacher.photo %}
+      <img class="profile-photo" src="{{ media_url(teacher.photo) }}">
+    {% else %}
+      <div class="profile-photo" style="display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:var(--blue-600);">{{ teacher.full_name[0]|upper }}</div>
+    {% endif %}
+    <div>
+      <h1>{{ teacher.full_name }}</h1>
+      <p class="desc">{{ teacher.teacher_uid }} · {{ teacher.subject or '-' }} · {{ teacher.designation or '-' }}</p>
+    </div>
+  </div>
+  <div class="page-actions">
+    {% if session.get('role') == 'admin' %}
+    <a href="{{ url_for('teacher_edit', tid=teacher.id) }}" class="btn btn-secondary">Edit</a>
+    <form method="POST" action="{{ url_for('teacher_delete', tid=teacher.id) }}" onsubmit="return confirm('Deactivate this teacher?');">
+      <button type="submit" class="btn btn-danger">Deactivate</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+<div class="card">
+  <div class="card-title">Teacher Details</div>
+  <div class="info-grid">
+    <div class="info-item"><div class="k">Qualification</div><div class="v">{{ teacher.qualification or '-' }}</div></div>
+    <div class="info-item"><div class="k">Email</div><div class="v">{{ teacher.email or '-' }}</div></div>
+    <div class="info-item"><div class="k">Phone</div><div class="v">{{ teacher.phone or '-' }}</div></div>
+    <div class="info-item"><div class="k">Joining Date</div><div class="v">{{ teacher.joining_date or '-' }}</div></div>
+    <div class="info-item"><div class="k">Emergency Contact</div><div class="v">{{ teacher.emergency_contact or '-' }}</div></div>
+    <div class="info-item" style="grid-column:1/-1;"><div class="k">Address</div><div class="v">{{ teacher.address or '-' }}</div></div>
+  </div>
+</div>
+{% endblock %}

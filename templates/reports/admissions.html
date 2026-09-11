@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Admission Report{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Admission Report</h1><p class="desc">{{ apps|length }} application(s)</p></div>
+  <div class="page-actions no-print"><button onclick="window.print()" class="btn btn-secondary">Print / Download</button></div>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Student</th><th>Parent</th><th>Class Applied</th><th>Contact</th><th>Status</th><th>Date</th></tr></thead>
+    <tbody>
+      {% for a in apps %}
+      <tr><td>{{ a.student_name }}</td><td>{{ a.parent_name or '-' }}</td><td>{{ a.class_applied or '-' }}</td>
+      <td>{{ a.phone or a.email or '-' }}</td>
+      <td><span class="badge {{ 'badge-amber' if a.status=='pending' else ('badge-green' if a.status=='approved' else 'badge-red') }}">{{ a.status }}</span></td>
+      <td>{{ a.created_at[:10] if a.created_at else '-' }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

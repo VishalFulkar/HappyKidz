@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Question Papers{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Question Paper Generator</h1><p class="desc">Build and print professional exam papers</p></div>
+  <div class="page-actions"><a href="{{ url_for('qp_add') }}" class="btn btn-primary">+ New Question Paper</a></div>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Title</th><th>Class</th><th>Subject</th><th>Total Marks</th><th></th></tr></thead>
+    <tbody>
+      {% for p in papers %}
+      <tr>
+        <td><strong>{{ p.title }}</strong></td>
+        <td>{% if p.class_name %}{{ p.class_name }}-{{ p.section }}{% else %}-{% endif %}</td>
+        <td>{{ p.subject_name or '-' }}</td>
+        <td>{{ p.total_marks or '-' }}</td>
+        <td>
+          <a href="{{ url_for('qp_builder', qp_id=p.id) }}" class="btn btn-secondary btn-sm">Edit Questions</a>
+          <a href="{{ url_for('qp_print', qp_id=p.id) }}" class="btn btn-secondary btn-sm">Print</a>
+          <form method="POST" action="{{ url_for('qp_delete', qp_id=p.id) }}" style="display:inline;" onsubmit="return confirm('Delete this question paper?');">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" style="text-align:center;color:var(--ink-500);padding:32px;">No question papers created yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Fees{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Fees Management</h1><p class="desc">Track dues, payments and receipts</p></div></div>
+
+<div class="stat-grid" style="grid-template-columns:repeat(2,1fr); margin-bottom:20px;">
+  <div class="stat-card"><div class="top"><div class="icon ic-green">&#128176;</div></div><div class="val">₹{{ '%.0f'|format(totals.collected) }}</div><div class="lbl">Total Collected</div></div>
+  <div class="stat-card"><div class="top"><div class="icon ic-red">&#8987;</div></div><div class="val">₹{{ '%.0f'|format(totals.pending) }}</div><div class="lbl">Pending / Partial</div></div>
+</div>
+
+<div class="card" style="margin-bottom:20px;">
+  <div class="card-title">Add Fee Record</div>
+  <form method="POST" class="form-grid">
+    <div class="form-group">
+      <label>Student</label>
+      <select name="student_id" required>
+        <option value="">Select student</option>
+        {% for s in students %}<option value="{{ s.id }}">{{ s.full_name }} ({{ s.student_uid }})</option>{% endfor %}
+      </select>
+    </div>
+    <div class="form-group"><label>Amount (₹)</label><input type="number" name="amount" required step="0.01"></div>
+    <div class="form-group"><label>Status</label>
+      <select name="payment_status">
+        <option value="pending">Pending</option>
+        <option value="partial">Partially Paid</option>
+        <option value="paid">Paid</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Due Date</label><input type="date" name="due_date"></div>
+    <div class="form-group"><label>Payment Date (if paid)</label><input type="date" name="payment_date"></div>
+    <div class="form-group full"><label>Remarks</label><input type="text" name="remarks" placeholder="e.g. Term 1 tuition fee"></div>
+    <button type="submit" class="btn btn-primary" style="grid-column:1/-1;">Add Fee Record</button>
+  </form>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Student</th><th>Amount</th><th>Status</th><th>Due Date</th><th>Payment Date</th><th>Receipt</th><th></th></tr></thead>
+    <tbody>
+      {% for f in fees %}
+      <tr>
+        <td>{{ f.full_name }}<br><span style="color:var(--ink-500); font-size:12px;">{{ f.student_uid }}</span></td>
+        <td>₹{{ '%.0f'|format(f.amount) }}</td>
+        <td><span class="badge {{ 'badge-green' if f.payment_status=='paid' else ('badge-amber' if f.payment_status=='partial' else 'badge-red') }}">{{ f.payment_status }}</span></td>
+        <td>{{ f.due_date or '-' }}</td>
+        <td>{{ f.payment_date or '-' }}</td>
+        <td>{{ f.receipt_number or '-' }}</td>
+        <td>
+          {% if f.payment_status != 'paid' %}
+          <form method="POST" action="{{ url_for('fees_mark_paid', fee_id=f.id) }}" style="display:inline;">
+            <button type="submit" class="btn btn-success btn-sm">Mark Paid</button>
+          </form>
+          {% else %}
+          <a href="{{ url_for('fees_receipt', fee_id=f.id) }}" class="btn btn-secondary btn-sm">Receipt</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" style="text-align:center;color:var(--ink-500);padding:32px;">No fee records yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

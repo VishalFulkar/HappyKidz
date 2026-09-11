@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Teacher Dashboard{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Welcome, {{ teacher.full_name if teacher else session.get('username') }} 👋</h1>
+    <p class="desc">{{ teacher.subject if teacher else '' }} {{ '· ' + teacher.designation if teacher and teacher.designation else '' }}</p>
+  </div>
+</div>
+
+<div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
+  <div class="stat-card"><div class="top"><div class="icon ic-blue">&#128100;</div></div><div class="val">{{ total_students }}</div><div class="lbl">Total Students</div></div>
+  <div class="stat-card"><div class="top"><div class="icon ic-amber">&#128203;</div></div><div class="val">{{ upcoming_exams|length }}</div><div class="lbl">Upcoming Exams</div></div>
+  <div class="stat-card"><div class="top"><div class="icon ic-green">&#128276;</div></div><div class="val">{{ notices|length }}</div><div class="lbl">Recent Notices</div></div>
+</div>
+
+<div class="card" style="margin-bottom:24px;">
+  <div class="card-title">Quick Actions</div>
+  <div class="qa-grid">
+    <a href="{{ url_for('student_list') }}" class="qa-btn"><div class="qa-ic">&#128269;</div>Find Student</a>
+    <a href="{{ url_for('attendance') }}" class="qa-btn"><div class="qa-ic">&#9989;</div>Mark Attendance</a>
+    <a href="{{ url_for('marks_entry') }}" class="qa-btn"><div class="qa-ic">&#9997;</div>Enter Results</a>
+    <a href="{{ url_for('marksheet_select') }}" class="qa-btn"><div class="qa-ic">&#127942;</div>Marksheet</a>
+    <a href="{{ url_for('qp_add') }}" class="qa-btn"><div class="qa-ic">&#128221;</div>Question Paper</a>
+    <a href="{{ url_for('timetable_view') }}" class="qa-btn"><div class="qa-ic">&#128197;</div>Timetable</a>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">Upcoming Exams</div>
+    {% if upcoming_exams %}
+      {% for e in upcoming_exams %}
+      <div class="notice-row"><div><strong>{{ e.exam_name }}</strong><p style="margin:2px 0 0;">{{ e.exam_date }} · {{ e.academic_session }}</p></div></div>
+      {% endfor %}
+    {% else %}<p>No upcoming exams.</p>{% endif %}
+  </div>
+  <div class="card">
+    <div class="card-title">Recent Notices</div>
+    {% if notices %}
+      {% for n in notices %}
+      <div class="notice-row"><div><strong>{{ n.title }}</strong><p style="margin:2px 0 0;">{{ n.date }}</p></div></div>
+      {% endfor %}
+    {% else %}<p>No notices yet.</p>{% endif %}
+  </div>
+</div>
+{% endblock %}

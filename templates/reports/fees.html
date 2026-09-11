@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Fee Report{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Fee Report</h1><p class="desc">{{ fees|length }} record(s)</p></div>
+  <div class="page-actions no-print"><button onclick="window.print()" class="btn btn-secondary">Print / Download</button></div>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Student</th><th>Amount</th><th>Status</th><th>Due Date</th><th>Payment Date</th><th>Receipt</th></tr></thead>
+    <tbody>
+      {% for f in fees %}
+      <tr><td>{{ f.full_name }}</td><td>₹{{ '%.0f'|format(f.amount) }}</td>
+      <td><span class="badge {{ 'badge-green' if f.payment_status=='paid' else ('badge-amber' if f.payment_status=='partial' else 'badge-red') }}">{{ f.payment_status }}</span></td>
+      <td>{{ f.due_date or '-' }}</td><td>{{ f.payment_date or '-' }}</td><td>{{ f.receipt_number or '-' }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

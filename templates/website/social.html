@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Social Media{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Social Media</h1><p class="desc">Add the school's official social links. Staff can update them anytime.</p></div><a href="{{ url_for('website_manager') }}" class="btn btn-secondary">← Website Manager</a></div>
+<form method="post" class="card form-card"><div class="form-grid">
+<label>Instagram URL<input type="url" name="instagram" value="{{ social.instagram if social else '' }}" placeholder="https://instagram.com/your-school"></label>
+<label>YouTube URL<input type="url" name="youtube" value="{{ social.youtube if social else '' }}" placeholder="https://youtube.com/@your-school"></label>
+<label>Facebook URL<input type="url" name="facebook" value="{{ social.facebook if social else '' }}" placeholder="https://facebook.com/your-school"></label>
+<label>WhatsApp link<input type="url" name="whatsapp" value="{{ social.whatsapp if social else '' }}" placeholder="https://wa.me/91..."></label>
+</div><div style="margin-top:18px;"><button class="btn btn-primary" type="submit">Save Social Links</button></div></form>
+{% endblock %}

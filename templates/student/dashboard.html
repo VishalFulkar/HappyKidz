@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Hi, {{ student.full_name }} 👋</h1>
+    <p class="desc">Class {{ student.class_name }}-{{ student.section }} · Roll No. {{ student.roll_number or '-' }}</p>
+  </div>
+  <div class="page-actions">
+    <a href="{{ url_for('student_profile', sid=student.id) }}" class="btn btn-secondary">View Full Profile</a>
+  </div>
+</div>
+
+<div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
+  <div class="stat-card"><div class="top"><div class="icon ic-green">&#9989;</div></div><div class="val">{{ att_pct if att_pct is not none else '-' }}%</div><div class="lbl">Attendance</div></div>
+  <div class="stat-card"><div class="top"><div class="icon ic-blue">&#128218;</div></div><div class="val">{{ student.class_name }}-{{ student.section }}</div><div class="lbl">Class &amp; Section</div></div>
+  <div class="stat-card"><div class="top"><div class="icon ic-amber">&#128176;</div></div><div class="val">{{ fees|length }}</div><div class="lbl">Fee Records</div></div>
+</div>
+
+<div class="card" style="margin-bottom:24px;">
+  <div class="card-title">Quick Links</div>
+  <div class="qa-grid" style="grid-template-columns:repeat(4,1fr);">
+    <a href="{{ url_for('marksheet_select') }}" class="qa-btn"><div class="qa-ic">&#127942;</div>My Results</a>
+    <a href="{{ url_for('timetable_view') }}" class="qa-btn"><div class="qa-ic">&#128197;</div>Timetable</a>
+    <a href="{{ url_for('notice_list') }}" class="qa-btn"><div class="qa-ic">&#128276;</div>Notices</a>
+    <a href="{{ url_for('event_list') }}" class="qa-btn"><div class="qa-ic">&#127881;</div>Events</a>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">Recent Notices</div>
+    {% if notices %}
+      {% for n in notices %}
+      <div class="notice-row"><div><strong>{{ n.title }}</strong><p style="margin:2px 0 0;">{{ n.content[:100] if n.content else '' }}</p></div></div>
+      {% endfor %}
+    {% else %}<p>No notices yet.</p>{% endif %}
+  </div>
+  <div class="card">
+    <div class="card-title">Fee Status</div>
+    {% if fees %}
+      <div class="table-wrap"><table><thead><tr><th>Amount</th><th>Status</th><th>Due Date</th></tr></thead><tbody>
+        {% for f in fees %}
+        <tr><td>₹{{ '%.0f'|format(f.amount) }}</td>
+        <td><span class="badge {{ 'badge-green' if f.payment_status=='paid' else 'badge-amber' }}">{{ f.payment_status }}</span></td>
+        <td>{{ f.due_date or '-' }}</td></tr>
+        {% endfor %}
+      </tbody></table></div>
+    {% else %}<p>No fee records yet.</p>{% endif %}
+  </div>
+</div>
+{% endblock %}

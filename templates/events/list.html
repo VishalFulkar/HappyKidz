@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Events{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Events</h1><p class="desc">Upcoming school events also show on the public homepage</p></div></div>
+
+{% if session.get('role') == 'admin' %}
+<div class="card" style="margin-bottom:20px;">
+  <div class="card-title">Add New Event</div>
+  <form method="POST" class="form-grid">
+    <div class="form-group full"><label>Title *</label><input type="text" name="title" required></div>
+    <div class="form-group full"><label>Description</label><textarea name="description"></textarea></div>
+    <div class="form-group"><label>Event Date</label><input type="date" name="event_date" required></div>
+    <button type="submit" class="btn btn-primary" style="align-self:end;">Add Event</button>
+  </form>
+</div>
+{% endif %}
+
+{% for e in events %}
+<div class="card" style="margin-bottom:14px;">
+  <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+    <div style="display:flex; gap:14px;">
+      <div class="date-chip" style="background:var(--amber-100); color:#b45309;"><div class="d">{{ e.event_date[8:10] if e.event_date else '--' }}</div><div>{{ e.event_date[5:7] if e.event_date else '' }}</div></div>
+      <div>
+        <h3 style="margin-bottom:4px;">{{ e.title }}</h3>
+        <p>{{ e.description }}</p>
+      </div>
+    </div>
+    {% if session.get('role') == 'admin' %}
+    <form method="POST" action="{{ url_for('event_delete', eid=e.id) }}" onsubmit="return confirm('Delete this event?');">
+      <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+{% else %}
+<div class="card"><p>No events scheduled yet.</p></div>
+{% endfor %}
+{% endblock %}

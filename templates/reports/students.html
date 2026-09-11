@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Student Report{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Student List Report</h1><p class="desc">{{ students|length }} student(s)</p></div>
+  <div class="page-actions no-print"><button onclick="window.print()" class="btn btn-secondary">Print / Download</button></div>
+</div>
+<div class="card" style="margin-bottom:20px;" class="no-print">
+  <form method="GET" class="form-grid" style="grid-template-columns:1fr auto; align-items:end;">
+    <div class="form-group">
+      <label>Filter by Class</label>
+      <select name="class_id" onchange="this.form.submit()">
+        <option value="">All Classes</option>
+        {% for c in classes %}<option value="{{ c.id }}" {{ 'selected' if class_id|string == c.id|string }}>{{ c.class_name }}-{{ c.section }}</option>{% endfor %}
+      </select>
+    </div>
+  </form>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Student ID</th><th>Name</th><th>Class</th><th>Roll No.</th><th>Father's Name</th><th>Phone</th></tr></thead>
+    <tbody>
+      {% for s in students %}
+      <tr><td>{{ s.student_uid }}</td><td>{{ s.full_name }}</td><td>{% if s.class_name %}{{ s.class_name }}-{{ s.section }}{% else %}-{% endif %}</td><td>{{ s.roll_number or '-' }}</td><td>{{ s.father_name or '-' }}</td><td>{{ s.phone or s.parent_contact or '-' }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

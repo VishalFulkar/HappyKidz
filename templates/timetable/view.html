@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Timetable{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Timetable</h1><p class="desc">{% if session.get('role')=='student' %}Your class schedule{% else %}Select a class to view or edit the weekly schedule{% endif %}</p></div></div>
+
+{% if session.get('role') != 'student' %}
+<div class="card" style="margin-bottom:20px;">
+  <form method="GET" class="form-grid" style="grid-template-columns:1fr auto; align-items:end;">
+    <div class="form-group">
+      <label>Class</label>
+      <select name="class_id" onchange="this.form.submit()">
+        <option value="">Select class</option>
+        {% for c in classes %}
+        <option value="{{ c.id }}" {{ 'selected' if class_id|string == c.id|string }}>{{ c.class_name }}-{{ c.section }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </form>
+</div>
+{% endif %}
+
+{% if class_id %}
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Period</th>{% for d in days %}<th>{{ d }}</th>{% endfor %}</tr></thead>
+    <tbody>
+      {% for p in periods %}
+      <tr>
+        <td><strong>Period {{ p }}</strong></td>
+        {% for d in days %}
+        {% set cell = grid.get((d, p)) %}
+        <td>
+          {% if session.get('role') == 'admin' %}
+          <form method="POST" style="display:flex; flex-direction:column; gap:4px;">
+            <input type="hidden" name="class_id" value="{{ class_id }}">
+            <input type="hidden" name="day_of_week" value="{{ d }}">
+            <input type="hidden" name="period_number" value="{{ p }}">
+            <select name="subject_id" onchange="this.form.submit()" style="font-size:12px; padding:6px;">
+              <option value="">—</option>
+              {% for s in subjects %}
+              <option value="{{ s.id }}" {{ 'selected' if cell and cell.subject_id==s.id }}>{{ s.subject_name }}</option>
+              {% endfor %}
+            </select>
+            <select name="teacher_id" onchange="this.form.submit()" style="font-size:12px; padding:6px;">
+              <option value="">Teacher</option>
+              {% for t in teachers %}
+              <option value="{{ t.id }}" {{ 'selected' if cell and cell.teacher_id==t.id }}>{{ t.full_name }}</option>
+              {% endfor %}
+            </select>
+          </form>
+          {% else %}
+            {% if cell %}
+              <strong>{{ cell.subject_name }}</strong><br><span style="font-size:12px; color:var(--ink-500);">{{ cell.teacher_name or '' }}</span>
+            {% else %}—{% endif %}
+          {% endif %}
+        </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}

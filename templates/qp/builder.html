@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Build: {{ paper.title }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>{{ paper.title }}</h1><p class="desc">Total marks so far: {{ total_q_marks }}{% if paper.total_marks %} / {{ paper.total_marks }}{% endif %}</p></div>
+  <div class="page-actions">
+    <a href="{{ url_for('qp_print', qp_id=paper.id) }}" class="btn btn-primary">Preview &amp; Print</a>
+    <a href="{{ url_for('qp_list') }}" class="btn btn-secondary">Back to List</a>
+  </div>
+</div>
+
+<div class="grid-2" style="grid-template-columns: 1fr 1.4fr; align-items:start;">
+  <div class="card">
+    <div class="card-title">Add Question</div>
+    <form method="POST">
+      <div class="form-group" style="margin-bottom:14px;">
+        <label>Question Type</label>
+        <select name="question_type">
+          <option>Multiple Choice</option>
+          <option>Fill in the Blanks</option>
+          <option>True/False</option>
+          <option>Very Short Answer</option>
+          <option>Short Answer</option>
+          <option>Long Answer</option>
+          <option>Case/Activity Based</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:14px;">
+        <label>Question Text</label>
+        <textarea name="question_text" required placeholder="Type the question here..."></textarea>
+      </div>
+      <div class="form-group" style="margin-bottom:14px;">
+        <label>Marks</label>
+        <input type="number" name="marks" step="0.5" value="1" min="0.5">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Add Question</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Questions ({{ questions|length }})</div>
+    {% if questions %}
+      {% for q in questions %}
+      <div class="notice-row" style="align-items:flex-start;">
+        <div style="flex:1;">
+          <span class="badge badge-blue">{{ q.question_type }}</span>
+          <span class="badge badge-gray">{{ q.marks }} marks</span>
+          <p style="margin-top:8px;">{{ q.order_index }}. {{ q.question_text }}</p>
+        </div>
+        <form method="POST" action="{{ url_for('qp_question_delete', qp_id=paper.id, q_id=q.id) }}" onsubmit="return confirm('Remove this question?');">
+          <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+        </form>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p>No questions added yet. Use the form to add your first question.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

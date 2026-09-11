@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Photo Gallery{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Photo Gallery</h1><p class="desc">Create an album, choose photos and publish them to the school website.</p></div><a href="{{ url_for('website_manager') }}" class="btn btn-secondary">← Website Manager</a></div>
+<form method="post" enctype="multipart/form-data" class="card form-card"><div class="form-grid">
+<label>Album name<input name="title" required placeholder="Annual Function 2026"></label>
+<label>Date<input type="date" name="event_date"></label>
+<label style="grid-column:1/-1;">Description<textarea name="description" rows="3" placeholder="A short description (optional)"></textarea></label>
+<label style="grid-column:1/-1;">Photos<input type="file" name="photos" accept="image/png,image/jpeg,image/gif,image/webp" multiple required><small>Up to 30 images, 5 MB each.</small></label>
+</div><div style="margin-top:18px;"><button class="btn btn-primary" type="submit">Create & Publish Album</button></div></form>
+<div class="card"><div class="card-title">Published Albums</div>{% if albums %}<div class="admin-album-list">{% for album in albums %}<div class="admin-album-row"><div><strong>{{ album.title }}</strong><p>{{ album.event_date or '' }} · {{ album.photo_count }} photos</p></div><form method="post" action="{{ url_for('gallery_delete', album_id=album.id) }}" onsubmit="return confirm('Delete this album and its photos?');"><button class="btn btn-danger btn-sm">Delete</button></form></div>{% endfor %}</div>{% else %}<p>No albums published yet.</p>{% endif %}</div>
+{% endblock %}

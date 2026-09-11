@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Notices{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Notices</h1><p class="desc">Published notices appear on the public homepage</p></div></div>
+
+{% if session.get('role') == 'admin' %}
+<div class="card" style="margin-bottom:20px;">
+  <div class="card-title">Publish New Notice</div>
+  <form method="POST" class="form-grid">
+    <div class="form-group full"><label>Title *</label><input type="text" name="title" required></div>
+    <div class="form-group full"><label>Content</label><textarea name="content"></textarea></div>
+    <div class="form-group"><label>Date</label><input type="date" name="date"></div>
+    <button type="submit" class="btn btn-primary" style="align-self:end;">Publish Notice</button>
+  </form>
+</div>
+{% endif %}
+
+{% for n in notices %}
+<div class="card" style="margin-bottom:14px;">
+  <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+    <div>
+      <h3 style="margin-bottom:4px;">{{ n.title }}</h3>
+      <p style="color:var(--ink-500); font-size:12.5px; margin-bottom:10px;">{{ n.date }}</p>
+      <p>{{ n.content }}</p>
+    </div>
+    {% if session.get('role') == 'admin' %}
+    <form method="POST" action="{{ url_for('notice_delete', nid=n.id) }}" onsubmit="return confirm('Delete this notice?');">
+      <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+{% else %}
+<div class="card"><p>No notices published yet.</p></div>
+{% endfor %}
+{% endblock %}

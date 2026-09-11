@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Classes{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Classes</h1><p class="desc">Manage classes and sections</p></div></div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">Add Class</div>
+    <form method="POST" class="form-grid" style="grid-template-columns:1fr 1fr;">
+      <div class="form-group"><label>Class Name</label><input type="text" name="class_name" placeholder="e.g. 6" required></div>
+      <div class="form-group"><label>Section</label><input type="text" name="section" placeholder="e.g. A" required></div>
+      <button type="submit" class="btn btn-primary" style="grid-column:1/-1;">Add Class</button>
+    </form>
+  </div>
+  <div class="card">
+    <div class="card-title">All Classes</div>
+    <div class="table-wrap"><table><thead><tr><th>Class</th><th>Section</th><th>Students</th><th></th></tr></thead><tbody>
+      {% for c in classes %}
+      <tr>
+        <td>{{ c.class_name }}</td><td>{{ c.section }}</td><td>{{ c.student_count }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('class_delete', cid=c.id) }}" onsubmit="return confirm('Delete this class?');">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4" style="text-align:center;color:var(--ink-500);padding:24px;">No classes yet.</td></tr>
+      {% endfor %}
+    </tbody></table></div>
+  </div>
+</div>
+{% endblock %}

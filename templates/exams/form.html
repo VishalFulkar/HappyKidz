@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Create Exam{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Create Exam</h1><p class="desc">Define the exam, then choose subjects and their maximum marks.</p></div></div>
+<div class="card">
+  <form method="POST">
+    <div class="form-grid">
+      <div class="form-group full"><label>Exam Name *</label><input type="text" name="exam_name" required placeholder="e.g. Half Yearly Examination"></div>
+      <div class="form-group"><label>Academic Session</label><input type="text" name="academic_session" placeholder="e.g. 2026-27"></div>
+      <div class="form-group"><label>Class</label>
+        <select name="class_id">
+          <option value="">All Classes</option>
+          {% for c in classes %}<option value="{{ c.id }}">{{ c.class_name }}-{{ c.section }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="form-group"><label>Exam Date</label><input type="date" name="exam_date"></div>
+    </div>
+
+    <div class="fieldset-title">Subjects for this Exam</div>
+    <p style="margin-bottom:14px;">Select the subjects included and set the maximum marks for each.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:40px;"></th><th>Subject</th><th style="width:160px;">Maximum Marks</th></tr></thead>
+        <tbody>
+          {% for s in subjects %}
+          <tr>
+            <td><input type="checkbox" name="subject_ids" value="{{ s.id }}" onchange="document.getElementById('mm_{{ s.id }}').disabled = !this.checked;"></td>
+            <td>{{ s.subject_name }}</td>
+            <td><input type="number" id="mm_{{ s.id }}" name="max_marks_{{ s.id }}" value="100" min="1" disabled></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div style="display:flex; gap:12px; margin-top:20px;">
+      <button type="submit" class="btn btn-primary btn-lg">Create Exam</button>
+      <a href="{{ url_for('exam_list') }}" class="btn btn-secondary btn-lg">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

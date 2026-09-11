@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Result Report{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Exam Result Summary</h1><p class="desc">Ranked results for the selected exam</p></div>
+  <div class="page-actions no-print">{% if summary %}<button onclick="window.print()" class="btn btn-secondary">Print / Download</button>{% endif %}</div>
+</div>
+<div class="card no-print" style="margin-bottom:20px;">
+  <form method="GET" class="form-grid" style="grid-template-columns:1fr auto; align-items:end;">
+    <div class="form-group">
+      <label>Exam</label>
+      <select name="exam_id" onchange="this.form.submit()">
+        <option value="">Select exam</option>
+        {% for e in exams %}<option value="{{ e.id }}" {{ 'selected' if exam_id|string == e.id|string }}>{{ e.exam_name }}</option>{% endfor %}
+      </select>
+    </div>
+  </form>
+</div>
+{% if summary %}
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Rank</th><th>Student</th><th>Total Obtained</th><th>Total Max</th><th>Percentage</th><th>Grade</th></tr></thead>
+    <tbody>
+      {% for row in summary %}
+      <tr><td>{{ loop.index }}</td><td>{{ row.student.full_name }}</td><td>{{ row.total_obt }}</td><td>{{ row.total_max }}</td><td>{{ row.pct }}%</td><td>{{ row.grade }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% elif exam_id %}
+<div class="card"><p>No results recorded for this exam yet.</p></div>
+{% endif %}
+{% endblock %}

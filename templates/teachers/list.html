@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Teachers{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Teachers</h1><p class="desc">{{ teachers|length }} teacher(s) on staff</p></div>
+  <div class="page-actions"><a href="{{ url_for('teacher_add') }}" class="btn btn-primary">+ Add Teacher</a></div>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th></th><th>Name</th><th>Teacher ID</th><th>Subject</th><th>Designation</th><th>Phone</th><th></th></tr></thead>
+    <tbody>
+      {% for t in teachers %}
+      <tr>
+        <td>{% if t.photo %}<img class="table-avatar" src="{{ media_url(t.photo) }}">{% else %}<div class="table-avatar"></div>{% endif %}</td>
+        <td><strong>{{ t.full_name }}</strong></td>
+        <td>{{ t.teacher_uid }}</td>
+        <td>{{ t.subject or '-' }}</td>
+        <td>{{ t.designation or '-' }}</td>
+        <td>{{ t.phone or '-' }}</td>
+        <td><a href="{{ url_for('teacher_profile', tid=t.id) }}" class="btn btn-secondary btn-sm">View</a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" style="text-align:center; color:var(--ink-500); padding:32px;">No teachers added yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

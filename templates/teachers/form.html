@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit Teacher' if teacher else 'Add Teacher' }}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{{ 'Edit Teacher' if teacher else 'Add New Teacher' }}</h1></div></div>
+<div class="card">
+  <form method="POST" enctype="multipart/form-data">
+    <div class="form-grid">
+      <div class="form-group full"><label>Full Name *</label><input type="text" name="full_name" required value="{{ teacher.full_name if teacher else '' }}"></div>
+      <div class="form-group"><label>Subject</label><input type="text" name="subject" value="{{ teacher.subject if teacher else '' }}"></div>
+      <div class="form-group"><label>Designation</label><input type="text" name="designation" placeholder="e.g. Senior Teacher" value="{{ teacher.designation if teacher else '' }}"></div>
+      <div class="form-group"><label>Qualification</label><input type="text" name="qualification" value="{{ teacher.qualification if teacher else '' }}"></div>
+      <div class="form-group"><label>Email</label><input type="email" name="email" value="{{ teacher.email if teacher else '' }}"></div>
+      <div class="form-group"><label>Phone</label><input type="tel" name="phone" value="{{ teacher.phone if teacher else '' }}"></div>
+      <div class="form-group"><label>Joining Date</label><input type="date" name="joining_date" value="{{ teacher.joining_date if teacher else '' }}"></div>
+      <div class="form-group"><label>Emergency Contact</label><input type="tel" name="emergency_contact" value="{{ teacher.emergency_contact if teacher else '' }}"></div>
+      <div class="form-group full"><label>Address</label><textarea name="address">{{ teacher.address if teacher else '' }}</textarea></div>
+      <div class="form-group"><label>Photo</label><input type="file" name="photo" accept="image/*"></div>
+    </div>
+    <div style="display:flex; gap:12px; margin-top:20px;">
+      <button type="submit" class="btn btn-primary btn-lg">Save Teacher</button>
+      <a href="{{ url_for('teacher_list') }}" class="btn btn-secondary btn-lg">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

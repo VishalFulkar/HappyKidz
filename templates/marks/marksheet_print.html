@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Marksheet - {{ student.full_name }}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="print-toolbar no-print">
+  <button onclick="window.print()" class="btn btn-primary">Print / Download PDF</button>
+  <a href="{{ url_for('marksheet_select') }}" class="btn btn-secondary">Back</a>
+</div>
+
+<div class="print-sheet">
+  <div class="print-head">
+    <div class="badge-logo">HK</div>
+    <h2>{{ school_name }}</h2>
+    <div class="place">{{ school_place }}</div>
+    <div class="doc-title">Report Card / Marksheet</div>
+  </div>
+
+  <div class="profile-header" style="margin-bottom:6px;">
+    {% if student.photo %}
+      <img class="profile-photo" style="width:70px;height:70px;" src="{{ media_url(student.photo) }}">
+    {% else %}
+      <div class="profile-photo" style="width:70px;height:70px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:var(--blue-600);">{{ student.full_name[0]|upper }}</div>
+    {% endif %}
+    <div>
+      <h3 style="margin-bottom:2px;">{{ student.full_name }}</h3>
+      <p style="margin:0;">Student ID: {{ student.student_uid }}</p>
+    </div>
+  </div>
+
+  <div class="print-meta">
+    <div><span class="k">Roll Number: </span><span class="v">{{ student.roll_number or '-' }}</span></div>
+    <div><span class="k">Class: </span><span class="v">{{ student.class_name }}-{{ student.section }}</span></div>
+    <div><span class="k">Date of Birth: </span><span class="v">{{ student.dob or '-' }}</span></div>
+    <div><span class="k">Academic Session: </span><span class="v">{{ exam.academic_session or '-' }}</span></div>
+    <div><span class="k">Exam: </span><span class="v">{{ exam.exam_name }}</span></div>
+    <div><span class="k">Attendance: </span><span class="v">{{ att_pct if att_pct is not none else '-' }}%</span></div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Subject</th><th>Maximum Marks</th><th>Obtained Marks</th><th>Percentage</th><th>Grade</th></tr></thead>
+      <tbody>
+        {% for r in subject_rows %}
+        <tr>
+          <td>{{ r.name }}</td>
+          <td>{{ r.max }}</td>
+          <td>{{ r.obtained if r.obtained is not none else '-' }}</td>
+          <td>{{ r.pct if r.pct is not none else '-' }}%</td>
+          <td>{{ r.grade }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="print-meta" style="margin-top:20px;">
+    <div><span class="k">Total Marks: </span><span class="v">{{ total_obtained }} / {{ total_max }}</span></div>
+    <div><span class="k">Overall Percentage: </span><span class="v">{{ overall_pct }}%</span></div>
+    <div><span class="k">Overall Grade: </span><span class="v">{{ overall_grade }}</span></div>
+  </div>
+
+  <div class="result-banner {{ 'result-pass' if result_status=='PASS' else 'result-fail' }}">{{ result_status }}</div>
+
+  <div class="sig-row">
+    <div><div class="line">Class Teacher</div></div>
+    <div><div class="line">School Stamp</div></div>
+    <div><div class="line">Principal</div></div>
+  </div>
+  <p style="text-align:right; margin-top:20px; font-size:12.5px;">Date: {{ today }}</p>
+</div>
+
+<script>
+setTimeout(() => { document.querySelectorAll('.flash').forEach(f => f.style.display = 'none'); }, 4500);
+</script>
+</body>
+</html>

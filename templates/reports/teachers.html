@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Teacher Report{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Teacher List Report</h1><p class="desc">{{ teachers|length }} teacher(s)</p></div>
+  <div class="page-actions no-print"><button onclick="window.print()" class="btn btn-secondary">Print / Download</button></div>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Teacher ID</th><th>Name</th><th>Subject</th><th>Designation</th><th>Phone</th><th>Joining Date</th></tr></thead>
+    <tbody>
+      {% for t in teachers %}
+      <tr><td>{{ t.teacher_uid }}</td><td>{{ t.full_name }}</td><td>{{ t.subject or '-' }}</td><td>{{ t.designation or '-' }}</td><td>{{ t.phone or '-' }}</td><td>{{ t.joining_date or '-' }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

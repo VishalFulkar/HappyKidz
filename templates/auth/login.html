@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login · {{ school_name }}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="flash-wrap">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash flash-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+</div>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="brand-badge" style="margin:0 auto;">HK</div>
+    </div>
+    <h1>Welcome back</h1>
+    <div class="sub">Sign in to {{ school_name }}, {{ school_place }}</div>
+    <form method="POST">
+      <div class="form-group" style="margin-bottom:14px;">
+        <label>Username</label>
+        <input type="text" name="username" required autofocus placeholder="Enter your username">
+      </div>
+      <div class="form-group" style="margin-bottom:18px;">
+        <label>Password</label>
+        <input type="password" name="password" required placeholder="Enter your password">
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg btn-block">Sign In</button>
+    </form>
+    <div class="auth-hint">Use the administrator credentials configured for this school system.</div>
+    <div style="text-align:center; margin-top:18px;">
+      <a href="{{ url_for('home') }}" style="font-size:13px; color:var(--ink-500); font-weight:600;">&larr; Back to school website</a>
+    </div>
+  </div>
+</div>
+<script>
+setTimeout(() => { document.querySelectorAll('.flash').forEach(f => f.style.display = 'none'); }, 4500);
+</script>
+</body>
+</html>

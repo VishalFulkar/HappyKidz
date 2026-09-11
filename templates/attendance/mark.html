@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Mark Attendance{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Mark Attendance</h1><p class="desc">Select a class and date, mark everyone, save once.</p></div>
+  <div class="page-actions"><a href="{{ url_for('attendance_reports') }}" class="btn btn-secondary">View Reports</a></div>
+</div>
+
+<div class="card" style="margin-bottom:20px;">
+  <form method="GET" class="form-grid" style="grid-template-columns: 1fr 1fr auto; align-items:end;">
+    <div class="form-group">
+      <label>Class</label>
+      <select name="class_id" onchange="this.form.submit()">
+        <option value="">Select class</option>
+        {% for c in classes %}
+        <option value="{{ c.id }}" {{ 'selected' if class_id|string == c.id|string }}>{{ c.class_name }}-{{ c.section }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Date</label>
+      <input type="date" name="date" value="{{ att_date }}" onchange="this.form.submit()">
+    </div>
+    <button type="submit" class="btn btn-primary">Load</button>
+  </form>
+</div>
+
+{% if class_id and students %}
+<form method="POST">
+  <input type="hidden" name="class_id" value="{{ class_id }}">
+  <input type="hidden" name="date" value="{{ att_date }}">
+  <div class="card">
+    <div class="card-title">
+      {{ students|length }} student(s)
+      <div style="display:flex;gap:8px;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="markAll('present')">Mark All Present</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="markAll('absent')">Mark All Absent</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Roll No.</th><th>Name</th><th style="width:220px;">Status</th></tr></thead>
+        <tbody>
+          {% for s in students %}
+          <tr>
+            <td>{{ s.roll_number or '-' }}</td>
+            <td>{{ s.full_name }}</td>
+            <td>
+              <label style="display:inline-flex;align-items:center;gap:6px;font-weight:500;margin-right:16px;">
+                <input type="radio" name="status_{{ s.id }}" value="present" class="att-radio" {{ 'checked' if existing.get(s.id, 'present')=='present' }}> Present
+              </label>
+              <label style="display:inline-flex;align-items:center;gap:6px;font-weight:500;">
+                <input type="radio" name="status_{{ s.id }}" value="absent" class="att-radio" {{ 'checked' if existing.get(s.id)=='absent' }}> Absent
+              </label>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <button type="submit" class="btn btn-primary btn-lg" style="margin-top:18px;">Save Attendance for Class</button>
+  </div>
+</form>
+{% elif class_id %}
+<div class="card"><p>No active students found in this class.</p></div>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script>
+function markAll(status) {
+  document.querySelectorAll('input[value="' + status + '"].att-radio').forEach(r => r.checked = true);
+}
+</script>
+{% endblock %}

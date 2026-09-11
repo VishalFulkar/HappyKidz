@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Account Security{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Account Security</h1><p class="desc">Keep your administrator account protected before the school goes live.</p></div></div>
+<div class="card form-card" style="max-width:720px;">
+  <div class="alert-inline alert-info"><strong>Admin account:</strong> {{ session.get('username') }}. Change the password before handing the system to school staff.</div>
+  <form method="post">
+    <div class="form-group"><label>Current password</label><input type="password" name="current_password" autocomplete="current-password" required></div>
+    <div class="form-group"><label>New password</label><input type="password" name="new_password" minlength="10" autocomplete="new-password" required><small>Use at least 10 characters. A long passphrase is best.</small></div>
+    <div class="form-group"><label>Confirm new password</label><input type="password" name="confirm_password" minlength="10" autocomplete="new-password" required></div>
+    <button class="btn btn-primary" type="submit">Change Admin Password</button>
+  </form>
+</div>
+{% endblock %}

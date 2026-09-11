@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Subjects{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Subjects</h1><p class="desc">Reusable across exams and question papers</p></div></div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">Add Subject</div>
+    <form method="POST" class="form-grid" style="grid-template-columns:1fr auto;">
+      <div class="form-group"><label>Subject Name</label><input type="text" name="subject_name" placeholder="e.g. Mathematics" required></div>
+      <button type="submit" class="btn btn-primary" style="align-self:end;">Add Subject</button>
+    </form>
+  </div>
+  <div class="card">
+    <div class="card-title">All Subjects</div>
+    <div class="table-wrap"><table><thead><tr><th>Subject</th><th></th></tr></thead><tbody>
+      {% for s in subjects %}
+      <tr>
+        <td>{{ s.subject_name }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('subject_delete', sub_id=s.id) }}" onsubmit="return confirm('Delete this subject?');">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="2" style="text-align:center;color:var(--ink-500);padding:24px;">No subjects yet.</td></tr>
+      {% endfor %}
+    </tbody></table></div>
+  </div>
+</div>
+{% endblock %}
