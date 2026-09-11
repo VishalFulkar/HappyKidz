@@ -12,7 +12,7 @@
     </div>
     <div class="hero-visual">
       {% if albums and albums[0].cover_path %}
-      <img src="{{ url_for('static', filename=albums[0].cover_path) }}" alt="{{ albums[0].title }} — {{ school_name }}">
+      <img src="{{ media_url(albums[0].cover_path) }}" alt="{{ albums[0].title }} — {{ school_name }}">
       <div class="hero-visual-gradient"></div>
       <div class="hero-caption"><span>Latest from campus</span><strong>{{ albums[0].title }}</strong></div>
       {% else %}
