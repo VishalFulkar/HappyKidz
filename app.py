@@ -129,8 +129,8 @@ def save_photo(file_storage, subfolder):
                 folder=f"hkps/{subfolder}",
                 resource_type="image",
                 transformation=[
-                    {"width": 800, "crop": "limit",
-                     "quality": "auto", "fetch_format": "auto"}
+                    {"width": 1920, "crop": "limit",
+                     "quality": "auto:good", "fetch_format": "auto"}
                 ],
             )
             return result["secure_url"]
