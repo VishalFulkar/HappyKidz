@@ -11,6 +11,9 @@ from functools import wraps
 from datetime import datetime, date
 import secrets
 import re
+import threading
+import time
+import urllib.request
 
 from flask import (
     Flask, render_template, request, redirect, url_for,
@@ -1779,6 +1782,36 @@ def account_delete(uid):
     db.close()
     flash("Account removed.", "success")
     return redirect(url_for("accounts"))
+
+
+# ---------------------------------------------------------------------------
+# Render Keep-Alive Background Task
+# ---------------------------------------------------------------------------
+@app.route("/api/ping")
+def ping():
+    """Simple healthcheck endpoint."""
+    return jsonify({"status": "alive", "time": datetime.now().isoformat()})
+
+def keep_alive_task():
+    """Pings the public URL every 10 minutes to prevent Render from sleeping."""
+    # Render automatically provides RENDER_EXTERNAL_URL
+    base_url = os.environ.get("RENDER_EXTERNAL_URL")
+    if not base_url:
+        return  # Do not run locally unless this env var is set
+    
+    ping_url = f"{base_url.rstrip('/')}/api/ping"
+    
+    while True:
+        # Sleep for 10 minutes
+        time.sleep(600)
+        try:
+            urllib.request.urlopen(ping_url)
+            print(f"[Keep-Alive] Ping sent to {ping_url}")
+        except Exception as e:
+            print(f"[Keep-Alive] Ping failed: {e}")
+
+# Start the background thread unconditionally (it exits immediately if not on Render)
+threading.Thread(target=keep_alive_task, daemon=True).start()
 
 
 # ---------------------------------------------------------------------------
